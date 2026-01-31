@@ -11,6 +11,13 @@ function App() {
     if (!product.trim()) return
 
     setLoading(true)
+
+    if (!supabase) {
+      alert('Error: Database connection is missing. Please check Vercel environment variables.')
+      setLoading(false)
+      return
+    }
+
     try {
       const { error } = await supabase
         .from('products')
