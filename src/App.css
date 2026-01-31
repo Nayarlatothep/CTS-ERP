@@ -96,6 +96,13 @@
   font-size: 1rem;
   transition: border-color 0.2s, box-shadow 0.2s;
   background-color: var(--bg-gray);
+  color: var(--text-dark);
+  /* Explicit color for visibility */
+}
+
+.form-input::placeholder {
+  color: #6b7280;
+  /* Gray color for placeholder */
 }
 
 .form-input:focus {
