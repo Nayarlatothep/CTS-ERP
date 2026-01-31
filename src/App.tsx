@@ -22,7 +22,7 @@ function App() {
       // Using lowercase 'products' as the table name
       const { error } = await supabase
         .from('products')
-        .insert([{ PRODUCT: product }])
+        .insert([{ Product: product }])
 
       if (error) throw error
 
