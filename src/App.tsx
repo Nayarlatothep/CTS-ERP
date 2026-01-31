@@ -19,10 +19,10 @@ function App() {
     }
 
     try {
-      // Using 'Products' as the table name (capital P)
+      // Using 'Products' as the table name and 'Product' as the column
       const { error } = await supabase
         .from('Products')
-        .insert([{ PRODUCT: product }])
+        .insert([{ Product: product }])
 
       if (error) throw error
 
