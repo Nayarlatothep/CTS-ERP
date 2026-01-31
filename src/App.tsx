@@ -1,14 +1,30 @@
 import { useState } from 'react'
 import './App.css'
+import { supabase } from './supabaseClient'
 
 function App() {
   const [product, setProduct] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (product.trim()) {
-      alert(`Product "${product}" entered successfully!`)
+    if (!product.trim()) return
+
+    setLoading(true)
+    try {
+      const { error } = await supabase
+        .from('products')
+        .insert([{ PRODUCT: product }])
+
+      if (error) throw error
+
+      alert(`Product "${product}" registered in database!`)
       setProduct('')
+    } catch (error: any) {
+      console.error('Error saving to Supabase:', error.message)
+      alert(`Error: ${error.message}`)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -56,8 +72,8 @@ function App() {
                   required
                 />
               </div>
-              <button type="submit" className="btn-primary">
-                Register Product
+              <button type="submit" className="btn-primary" disabled={loading}>
+                {loading ? 'Registering...' : 'Register Product'}
               </button>
             </form>
           </div>
