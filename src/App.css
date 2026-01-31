@@ -91,13 +91,14 @@
 .form-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 1px solid var(--border-gray);
+  border: 1px solid #d1d5db !important;
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.2s, box-shadow 0.2s;
-  background-color: var(--bg-gray);
-  color: var(--text-dark);
-  /* Explicit color for visibility */
+  background-color: #f9fafb !important;
+  /* Lighter white/gray background */
+  color: #111827 !important;
+  /* Force dark text color */
 }
 
 .form-input::placeholder {
