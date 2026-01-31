@@ -19,8 +19,9 @@ function App() {
     }
 
     try {
+      // Trying uppercase 'PRODUCTS' to match column naming convention
       const { error } = await supabase
-        .from('products')
+        .from('PRODUCTS')
         .insert([{ PRODUCT: product }])
 
       if (error) throw error
