@@ -4,6 +4,7 @@ import { supabase } from './supabaseClient'
 
 function App() {
   const [product, setProduct] = useState('')
+  const [materialType, setMaterialType] = useState('Raw Material')
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -22,12 +23,16 @@ function App() {
       // Using 'Products' as the table name and 'Product' as the column
       const { error } = await supabase
         .from('Products')
-        .insert([{ Product: product }])
+        .insert([{
+          Product: product,
+          material_type: materialType
+        }])
 
       if (error) throw error
 
-      alert(`Product "${product}" registered in database!`)
+      alert(`Product "${product}" (${materialType}) registered in database!`)
       setProduct('')
+      setMaterialType('Raw Material')
     } catch (error: any) {
       console.error('Error saving to Supabase:', error.message)
       alert(`Error: ${error.message}`)
@@ -79,6 +84,20 @@ function App() {
                   onChange={(e) => setProduct(e.target.value)}
                   required
                 />
+              </div>
+              <div className="form-group">
+                <label htmlFor="materialType" className="form-label">Material Type:</label>
+                <select
+                  id="materialType"
+                  className="form-input"
+                  value={materialType}
+                  onChange={(e) => setMaterialType(e.target.value)}
+                  required
+                >
+                  <option value="Raw Material">Raw Material</option>
+                  <option value="Wip">Wip</option>
+                  <option value="Finished Goods">Finished Goods</option>
+                </select>
               </div>
               <button type="submit" className="btn-primary" disabled={loading}>
                 {loading ? 'Registering...' : 'Register Product'}
