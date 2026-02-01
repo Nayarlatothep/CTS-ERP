@@ -11,8 +11,9 @@ function App() {
 
   const fetchProducts = async () => {
     if (!supabase) return
+    const client = supabase
     try {
-      const { data, error } = await supabase
+      const { data, error } = await client
         .from('Products')
         .select('*')
         .order('id', { ascending: false })
@@ -31,11 +32,13 @@ function App() {
   }, [])
 
   const handleDelete = async (id: number) => {
+    if (!supabase) return
+    const client = supabase
     const confirmed = window.confirm("This entry will be deleted from the table, are you sure you want to proceed?")
 
     if (confirmed) {
       try {
-        const { error } = await supabase
+        const { error } = await client
           .from('Products')
           .delete()
           .eq('id', id)
@@ -63,9 +66,11 @@ function App() {
       return
     }
 
+    const client = supabase
+
     try {
       // Using 'Products' as the table name and 'Product' as the column
-      const { error } = await supabase
+      const { error } = await client
         .from('Products')
         .insert([{
           Product: product,
