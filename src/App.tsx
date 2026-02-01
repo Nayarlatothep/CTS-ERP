@@ -193,7 +193,7 @@ function App() {
           user: receptionUser,
           quantity: parseFloat(receptionQuantity),
           unit: receptionUnit,
-          product_id: selectedProd.id // Mapping the product ID
+          id: selectedProd.id // Mapping the product ID to the 'id' column
         }])
 
       if (error) throw error
