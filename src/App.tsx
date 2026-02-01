@@ -174,16 +174,44 @@ function App() {
 
     setReceptionLoading(true)
 
-    // Simulation unchanged as per current flow
-    setTimeout(() => {
-      alert(`Material Reception Registered!\nProduct: ${receptionProduct}\nInvoice: ${receptionInvoice}\nQuantity: ${receptionQuantity} ${receptionUnit}\nUser: ${receptionUser}`)
+    if (!supabase) {
+      alert('Error: Database connection is missing.')
+      setReceptionLoading(false)
+      return
+    }
+
+    try {
+      // Find the ID of the selected product
+      const selectedProd = productsList.find(p => p.Product === receptionProduct)
+      if (!selectedProd) throw new Error('Selected product not found in database')
+
+      const { error } = await supabase
+        .from('Reception')
+        .insert([{
+          product: receptionProduct,
+          invoice: receptionInvoice,
+          user: receptionUser,
+          quantity: parseFloat(receptionQuantity),
+          unit: receptionUnit,
+          product_id: selectedProd.id // Mapping the product ID
+        }])
+
+      if (error) throw error
+
+      alert(`Material Reception Registered Successfully!\nProduct: ${receptionProduct}\nInvoice: ${receptionInvoice}`)
+
+      // Reset form
       setReceptionProduct('')
       setReceptionUser('')
       setReceptionQuantity('')
       setReceptionUnit('')
       setReceptionInvoice('')
+    } catch (error: any) {
+      console.error('Error saving reception:', error.message)
+      alert(`Error: ${error.message}`)
+    } finally {
       setReceptionLoading(false)
-    }, 1000)
+    }
   }
 
   return (
