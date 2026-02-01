@@ -52,7 +52,7 @@ function App() {
       const { data, error } = await client
         .from('Employees')
         .select('*')
-        .order('employee_name', { ascending: true })
+        .order('employee_id', { ascending: true })
 
       if (error) throw error
       setEmployeesList(data || [])
