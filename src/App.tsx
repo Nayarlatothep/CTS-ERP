@@ -15,11 +15,17 @@ function App() {
 
   // Material Reception Form States
   const [receptionProduct, setReceptionProduct] = useState('')
-  const [receptionUser, setReceptionUser] = useState('')
+  const [receptionUser, setReceptionUser] = useState('') // This will now be an ID or name from the list
   const [receptionQuantity, setReceptionQuantity] = useState('')
   const [receptionUnit, setReceptionUnit] = useState('')
   const [receptionInvoice, setReceptionInvoice] = useState('')
   const [receptionLoading, setReceptionLoading] = useState(false)
+
+  // Employees Form States
+  const [employeeName, setEmployeeName] = useState('')
+  const [employeesList, setEmployeesList] = useState<any[]>([])
+  const [fetchingEmployees, setFetchingEmployees] = useState(true)
+  const [addingEmployee, setAddingEmployee] = useState(false)
 
   const fetchProducts = async () => {
     if (!supabase) return
@@ -39,8 +45,27 @@ function App() {
     }
   }
 
+  const fetchEmployees = async () => {
+    if (!supabase) return
+    const client = supabase
+    try {
+      const { data, error } = await client
+        .from('Employees')
+        .select('*')
+        .order('employee_name', { ascending: true })
+
+      if (error) throw error
+      setEmployeesList(data || [])
+    } catch (error: any) {
+      console.error('Error fetching employees:', error.message)
+    } finally {
+      setFetchingEmployees(false)
+    }
+  }
+
   useEffect(() => {
     fetchProducts()
+    fetchEmployees()
   }, [])
 
   const handleDelete = async (id: number) => {
@@ -110,16 +135,46 @@ function App() {
     }
   }
 
+  const handleAddEmployee = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!employeeName.trim()) return
+
+    setAddingEmployee(true)
+
+    if (!supabase) {
+      alert('Database connection is missing.')
+      setAddingEmployee(false)
+      return
+    }
+
+    try {
+      const { error } = await supabase
+        .from('Employees')
+        .insert([{ employee_name: employeeName }])
+
+      if (error) throw error
+
+      alert(`Employee "${employeeName}" registered!`)
+      setEmployeeName('')
+      fetchEmployees() // Refresh the list and dropdowns
+    } catch (error: any) {
+      console.error('Error saving employee:', error.message)
+      alert(`Error: ${error.message}`)
+    } finally {
+      setAddingEmployee(false)
+    }
+  }
+
   const handleReceptionSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!receptionProduct) {
-      alert('Please select a product')
+    if (!receptionProduct || !receptionUser) {
+      alert('Please select both a product and a user')
       return
     }
 
     setReceptionLoading(true)
 
-    // For now, we simulate success as the table for reception might not exist yet
+    // Simulation unchanged as per current flow
     setTimeout(() => {
       alert(`Material Reception Registered!\nProduct: ${receptionProduct}\nInvoice: ${receptionInvoice}\nQuantity: ${receptionQuantity} ${receptionUnit}\nUser: ${receptionUser}`)
       setReceptionProduct('')
@@ -153,6 +208,14 @@ function App() {
             </button>
           </li>
           <li className="nav-item">
+            <button
+              className={`nav-link-btn ${activeTab === 'employees' ? 'active' : ''}`}
+              onClick={() => setActiveTab('employees')}
+            >
+              Employees
+            </button>
+          </li>
+          <li className="nav-item">
             <button className="nav-link-btn" disabled>Available Inventory</button>
           </li>
           <li className="nav-item">
@@ -167,11 +230,12 @@ function App() {
       <main className="main-content">
         <header className="page-header">
           <h1 className="page-title">
-            {activeTab === 'issued-products' ? 'Issued Products Entry' : 'Material Reception'}
+            {activeTab === 'issued-products' ? 'Issued Products Entry' :
+              activeTab === 'material-reception' ? 'Material Reception' : 'Employees Management'}
           </h1>
         </header>
 
-        {activeTab === 'issued-products' ? (
+        {activeTab === 'issued-products' && (
           <section className="entry-section">
             <div className="card">
               <h2 className="section-subtitle">Register New Product</h2>
@@ -250,7 +314,9 @@ function App() {
               )}
             </div>
           </section>
-        ) : (
+        )}
+
+        {activeTab === 'material-reception' && (
           <section className="entry-section">
             <div className="card">
               <h2 className="section-subtitle">Material Reception</h2>
@@ -288,15 +354,20 @@ function App() {
 
                 <div className="form-group">
                   <label htmlFor="receptionUser" className="form-label">User:</label>
-                  <input
-                    type="text"
+                  <select
                     id="receptionUser"
                     className="form-input"
-                    placeholder="User name"
                     value={receptionUser}
                     onChange={(e) => setReceptionUser(e.target.value)}
                     required
-                  />
+                  >
+                    <option value="">-- Select Employee --</option>
+                    {employeesList.map((emp) => (
+                      <option key={emp.id} value={emp.employee_name}>
+                        {emp.employee_name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div className="grid-2-cols">
@@ -332,6 +403,59 @@ function App() {
                   {receptionLoading ? 'Registering...' : 'Register Reception'}
                 </button>
               </form>
+            </div>
+          </section>
+        )}
+
+        {activeTab === 'employees' && (
+          <section className="entry-section">
+            <div className="card">
+              <h2 className="section-subtitle">Register New Employee</h2>
+              <form onSubmit={handleAddEmployee}>
+                <div className="form-group">
+                  <label htmlFor="employeeName" className="form-label">Employee Name:</label>
+                  <input
+                    type="text"
+                    id="employeeName"
+                    className="form-input"
+                    placeholder="Full name..."
+                    value={employeeName}
+                    onChange={(e) => setEmployeeName(e.target.value)}
+                    required
+                  />
+                </div>
+                <button type="submit" className="btn-primary" disabled={addingEmployee}>
+                  {addingEmployee ? 'Registering...' : 'Register Employee'}
+                </button>
+              </form>
+            </div>
+
+            <div className="card table-card">
+              <h2 className="section-subtitle">Employees List</h2>
+              {fetchingEmployees ? (
+                <p className="loading-text">Loading employees...</p>
+              ) : employeesList.length === 0 ? (
+                <p className="empty-text">No employees registered yet.</p>
+              ) : (
+                <div className="table-responsive">
+                  <table className="product-table">
+                    <thead>
+                      <tr>
+                        <th>Employee Name</th>
+                        <th>Registration Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {employeesList.map((emp) => (
+                        <tr key={emp.id}>
+                          <td>{emp.employee_name}</td>
+                          <td>{new Date(emp.created_at).toLocaleDateString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </section>
         )}
