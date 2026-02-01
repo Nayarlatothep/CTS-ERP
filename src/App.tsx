@@ -38,17 +38,22 @@ function App() {
 
     if (confirmed) {
       try {
-        const { error } = await client
+        const { error, count } = await client
           .from('Products')
-          .delete()
+          .delete({ count: 'exact' })
           .eq('id', id)
 
         if (error) throw error
 
+        if (count === 0) {
+          alert("No records were deleted. This usually means a Database Policy (RLS) is blocking the delete operation or the ID wasn't found.")
+          return
+        }
+
         // Update local state instead of re-fetching for better UX
         setProductsList(prev => prev.filter(item => item.id !== id))
       } catch (error: any) {
-        console.error('Error deleting product:', error.message)
+        console.error('Error deleting product:', error.message, error)
         alert(`Error: ${error.message}`)
       }
     }
