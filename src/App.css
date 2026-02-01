@@ -33,20 +33,41 @@
   margin-bottom: 0.5rem;
 }
 
-.nav-link {
+.nav-link,
+.nav-link-btn {
   display: block;
+  width: 100%;
   padding: 0.75rem 1rem;
   color: var(--text-light);
   text-decoration: none;
   border-radius: 6px;
   transition: background-color 0.2s, color 0.2s;
   font-weight: 500;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
 }
 
 .nav-link:hover,
-.nav-link.active {
+.nav-link-btn:hover,
+.nav-link.active,
+.nav-link-btn.active {
   background-color: var(--primary-blue);
   color: var(--white);
+}
+
+.nav-link-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.grid-2-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
 }
 
 .main-content {

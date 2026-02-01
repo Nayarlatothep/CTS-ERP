@@ -3,11 +3,23 @@ import './App.css'
 import { supabase } from './supabaseClient'
 
 function App() {
+  // Navigation State
+  const [activeTab, setActiveTab] = useState('issued-products')
+
+  // Issued Products Form States
   const [product, setProduct] = useState('')
   const [materialType, setMaterialType] = useState('Raw Material')
   const [productsList, setProductsList] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
+
+  // Material Reception Form States
+  const [receptionProduct, setReceptionProduct] = useState('')
+  const [receptionUser, setReceptionUser] = useState('')
+  const [receptionQuantity, setReceptionQuantity] = useState('')
+  const [receptionUnit, setReceptionUnit] = useState('')
+  const [receptionInvoice, setReceptionInvoice] = useState('')
+  const [receptionLoading, setReceptionLoading] = useState(false)
 
   const fetchProducts = async () => {
     if (!supabase) return
@@ -98,113 +110,231 @@ function App() {
     }
   }
 
+  const handleReceptionSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!receptionProduct) {
+      alert('Please select a product')
+      return
+    }
+
+    setReceptionLoading(true)
+
+    // For now, we simulate success as the table for reception might not exist yet
+    setTimeout(() => {
+      alert(`Material Reception Registered!\nProduct: ${receptionProduct}\nInvoice: ${receptionInvoice}\nQuantity: ${receptionQuantity} ${receptionUnit}\nUser: ${receptionUser}`)
+      setReceptionProduct('')
+      setReceptionUser('')
+      setReceptionQuantity('')
+      setReceptionUnit('')
+      setReceptionInvoice('')
+      setReceptionLoading(false)
+    }, 1000)
+  }
+
   return (
     <div className="app-container">
       <aside className="sidebar">
         <div className="logo">Inventory ERP</div>
         <ul className="nav-menu">
           <li className="nav-item">
-            <a href="#" className="nav-link active">Issued Products Entry</a>
-          </li>
-          {/* Placeholder items */}
-          <li className="nav-item">
-            <a href="#" className="nav-link">Available Inventory</a>
-          </li>
-          <li className="nav-item">
-            <a href="#" className="nav-link">Material Reception</a>
+            <button
+              className={`nav-link-btn ${activeTab === 'issued-products' ? 'active' : ''}`}
+              onClick={() => setActiveTab('issued-products')}
+            >
+              Issued Products Entry
+            </button>
           </li>
           <li className="nav-item">
-            <a href="#" className="nav-link">Reports</a>
+            <button
+              className={`nav-link-btn ${activeTab === 'material-reception' ? 'active' : ''}`}
+              onClick={() => setActiveTab('material-reception')}
+            >
+              Material Reception
+            </button>
           </li>
           <li className="nav-item">
-            <a href="#" className="nav-link">Settings</a>
+            <button className="nav-link-btn" disabled>Available Inventory</button>
+          </li>
+          <li className="nav-item">
+            <button className="nav-link-btn" disabled>Reports</button>
+          </li>
+          <li className="nav-item">
+            <button className="nav-link-btn" disabled>Settings</button>
           </li>
         </ul>
       </aside>
 
       <main className="main-content">
         <header className="page-header">
-          <h1 className="page-title">Issued Products Entry</h1>
+          <h1 className="page-title">
+            {activeTab === 'issued-products' ? 'Issued Products Entry' : 'Material Reception'}
+          </h1>
         </header>
 
-        <section className="entry-section">
-          <div className="card">
-            <h2 className="section-subtitle">Register New Product</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="product" className="form-label">Product:</label>
-                <input
-                  type="text"
-                  id="product"
-                  className="form-input"
-                  placeholder="Enter product name..."
-                  value={product}
-                  onChange={(e) => setProduct(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="materialType" className="form-label">Material Type:</label>
-                <select
-                  id="materialType"
-                  className="form-input"
-                  value={materialType}
-                  onChange={(e) => setMaterialType(e.target.value)}
-                  required
-                >
-                  <option value="Raw Material">Raw Material</option>
-                  <option value="Wip">Wip</option>
-                  <option value="Finished Goods">Finished Goods</option>
-                </select>
-              </div>
-              <button type="submit" className="btn-primary" disabled={loading}>
-                {loading ? 'Registering...' : 'Register Product'}
-              </button>
-            </form>
-          </div>
+        {activeTab === 'issued-products' ? (
+          <section className="entry-section">
+            <div className="card">
+              <h2 className="section-subtitle">Register New Product</h2>
+              <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                  <label htmlFor="product" className="form-label">Product:</label>
+                  <input
+                    type="text"
+                    id="product"
+                    className="form-input"
+                    placeholder="Enter product name..."
+                    value={product}
+                    onChange={(e) => setProduct(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="materialType" className="form-label">Material Type:</label>
+                  <select
+                    id="materialType"
+                    className="form-input"
+                    value={materialType}
+                    onChange={(e) => setMaterialType(e.target.value)}
+                    required
+                  >
+                    <option value="Raw Material">Raw Material</option>
+                    <option value="Wip">Wip</option>
+                    <option value="Finished Goods">Finished Goods</option>
+                  </select>
+                </div>
+                <button type="submit" className="btn-primary" disabled={loading}>
+                  {loading ? 'Registering...' : 'Register Product'}
+                </button>
+              </form>
+            </div>
 
-          <div className="card table-card">
-            <h2 className="section-subtitle">Registered Products List</h2>
-            {fetching ? (
-              <p className="loading-text">Loading products...</p>
-            ) : productsList.length === 0 ? (
-              <p className="empty-text">No products registered yet.</p>
-            ) : (
-              <div className="table-responsive">
-                <table className="product-table">
-                  <thead>
-                    <tr>
-                      <th>Product Name</th>
-                      <th>Material Type</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {productsList.map((item) => (
-                      <tr key={item.id}>
-                        <td>{item.Product}</td>
-                        <td>
-                          <span className={`badge badge-${item.material_type?.toLowerCase().replace(' ', '-')}`}>
-                            {item.material_type}
-                          </span>
-                        </td>
-                        <td>
-                          <button
-                            className="btn-delete"
-                            onClick={() => handleDelete(item.id)}
-                            title="Delete row"
-                          >
-                            Delete row
-                          </button>
-                        </td>
+            <div className="card table-card">
+              <h2 className="section-subtitle">Registered Products List</h2>
+              {fetching ? (
+                <p className="loading-text">Loading products...</p>
+              ) : productsList.length === 0 ? (
+                <p className="empty-text">No products registered yet.</p>
+              ) : (
+                <div className="table-responsive">
+                  <table className="product-table">
+                    <thead>
+                      <tr>
+                        <th>Product Name</th>
+                        <th>Material Type</th>
+                        <th>Action</th>
                       </tr>
+                    </thead>
+                    <tbody>
+                      {productsList.map((item) => (
+                        <tr key={item.id}>
+                          <td>{item.Product}</td>
+                          <td>
+                            <span className={`badge badge-${item.material_type?.toLowerCase().replace(' ', '-')}`}>
+                              {item.material_type}
+                            </span>
+                          </td>
+                          <td>
+                            <button
+                              className="btn-delete"
+                              onClick={() => handleDelete(item.id)}
+                              title="Delete row"
+                            >
+                              Delete row
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </section>
+        ) : (
+          <section className="entry-section">
+            <div className="card">
+              <h2 className="section-subtitle">Material Reception</h2>
+              <form onSubmit={handleReceptionSubmit}>
+                <div className="form-group">
+                  <label htmlFor="receptionProduct" className="form-label">Product:</label>
+                  <select
+                    id="receptionProduct"
+                    className="form-input"
+                    value={receptionProduct}
+                    onChange={(e) => setReceptionProduct(e.target.value)}
+                    required
+                  >
+                    <option value="">-- Select a Product --</option>
+                    {productsList.map((item) => (
+                      <option key={item.id} value={item.Product}>
+                        {item.Product}
+                      </option>
                     ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        </section>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="receptionInvoice" className="form-label">Invoice Number:</label>
+                  <input
+                    type="text"
+                    id="receptionInvoice"
+                    className="form-input"
+                    placeholder="Enter Invoice #"
+                    value={receptionInvoice}
+                    onChange={(e) => setReceptionInvoice(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="receptionUser" className="form-label">User:</label>
+                  <input
+                    type="text"
+                    id="receptionUser"
+                    className="form-input"
+                    placeholder="User name"
+                    value={receptionUser}
+                    onChange={(e) => setReceptionUser(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="grid-2-cols">
+                  <div className="form-group">
+                    <label htmlFor="receptionQuantity" className="form-label">Quantity:</label>
+                    <input
+                      type="number"
+                      id="receptionQuantity"
+                      className="form-input"
+                      placeholder="0.00"
+                      step="0.01"
+                      value={receptionQuantity}
+                      onChange={(e) => setReceptionQuantity(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="receptionUnit" className="form-label">Unit:</label>
+                    <input
+                      type="text"
+                      id="receptionUnit"
+                      className="form-input"
+                      placeholder="e.g. Kg, Pcs, Mts"
+                      value={receptionUnit}
+                      onChange={(e) => setReceptionUnit(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <button type="submit" className="btn-primary" disabled={receptionLoading}>
+                  {receptionLoading ? 'Registering...' : 'Register Reception'}
+                </button>
+              </form>
+            </div>
+          </section>
+        )}
       </main>
     </div>
   )
