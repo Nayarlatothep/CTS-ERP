@@ -441,15 +441,21 @@ function App() {
                   <table className="product-table">
                     <thead>
                       <tr>
+                        <th>Employee ID</th>
                         <th>Employee Name</th>
-                        <th>Registration Date</th>
+                        <th>Hire Date</th>
                       </tr>
                     </thead>
                     <tbody>
                       {employeesList.map((emp) => (
                         <tr key={emp.id}>
+                          <td>{emp.employee_id || 'N/A'}</td>
                           <td>{emp.employee_name}</td>
-                          <td>{new Date(emp.created_at).toLocaleDateString()}</td>
+                          <td>
+                            {emp.hiredate
+                              ? new Date(emp.hiredate).toLocaleDateString()
+                              : 'N/A'}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
