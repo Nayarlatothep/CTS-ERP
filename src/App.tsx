@@ -72,6 +72,7 @@ function App() {
 
         <section className="entry-section">
           <div className="card">
+            <h2 className="section-subtitle">Register New Product</h2>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="product" className="form-label">Product:</label>
@@ -103,6 +104,48 @@ function App() {
                 {loading ? 'Registering...' : 'Register Product'}
               </button>
             </form>
+          </div>
+
+          <div className="card table-card">
+            <h2 className="section-subtitle">Registered Products List</h2>
+            {fetching ? (
+              <p className="loading-text">Loading products...</p>
+            ) : productsList.length === 0 ? (
+              <p className="empty-text">No products registered yet.</p>
+            ) : (
+              <div className="table-responsive">
+                <table className="product-table">
+                  <thead>
+                    <tr>
+                      <th>Product Name</th>
+                      <th>Material Type</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {productsList.map((item) => (
+                      <tr key={item.id}>
+                        <td>{item.Product}</td>
+                        <td>
+                          <span className={`badge badge-${item.material_type?.toLowerCase().replace(' ', '-')}`}>
+                            {item.material_type}
+                          </span>
+                        </td>
+                        <td>
+                          <button
+                            className="btn-delete"
+                            onClick={() => handleDelete(item.id)}
+                            title="Delete row"
+                          >
+                            Delete row
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </section>
       </main>
