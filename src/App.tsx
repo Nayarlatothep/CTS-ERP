@@ -1,11 +1,55 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import { supabase } from './supabaseClient'
 
 function App() {
   const [product, setProduct] = useState('')
   const [materialType, setMaterialType] = useState('Raw Material')
+  const [productsList, setProductsList] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
+  const [fetching, setFetching] = useState(true)
+
+  const fetchProducts = async () => {
+    if (!supabase) return
+    try {
+      const { data, error } = await supabase
+        .from('Products')
+        .select('*')
+        .order('id', { ascending: false })
+
+      if (error) throw error
+      setProductsList(data || [])
+    } catch (error: any) {
+      console.error('Error fetching products:', error.message)
+    } finally {
+      setFetching(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchProducts()
+  }, [])
+
+  const handleDelete = async (id: number) => {
+    const confirmed = window.confirm("This entry will be deleted from the table, are you sure you want to proceed?")
+
+    if (confirmed) {
+      try {
+        const { error } = await supabase
+          .from('Products')
+          .delete()
+          .eq('id', id)
+
+        if (error) throw error
+
+        // Update local state instead of re-fetching for better UX
+        setProductsList(prev => prev.filter(item => item.id !== id))
+      } catch (error: any) {
+        console.error('Error deleting product:', error.message)
+        alert(`Error: ${error.message}`)
+      }
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,6 +77,9 @@ function App() {
       alert(`Product "${product}" (${materialType}) registered in database!`)
       setProduct('')
       setMaterialType('Raw Material')
+
+      // Refresh list after successful addition
+      fetchProducts()
     } catch (error: any) {
       console.error('Error saving to Supabase:', error.message)
       alert(`Error: ${error.message}`)
