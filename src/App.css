@@ -37,18 +37,31 @@ body {
   padding: 2rem;
   box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(8px);
-  z-index: 10;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+}
+
+.logo-container {
+  margin-bottom: 3rem;
 }
 
 .logo {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 800;
-  margin-bottom: 3rem;
   background: linear-gradient(to right, #60a5fa, #3b82f6);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  letter-spacing: -0.5px;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.logo-subtitle {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 600;
+  margin-top: 0.25rem;
+  letter-spacing: 0.5px;
 }
 
 .nav-menu {
@@ -282,15 +295,35 @@ body {
 }
 
 .product-card-type {
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.7rem;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.card-data-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+  font-size: 0.85rem;
+}
+
+.card-data-label {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.card-data-value {
+  color: var(--slate-dark);
+  font-weight: 700;
 }
 
 .stock-indicator {
-  margin-top: 1rem;
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid #f1f5f9;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -438,6 +471,24 @@ body {
 .fab-confirm:hover {
   transform: translateY(-4px) scale(1.05);
   background: var(--cobalt-blue);
+}
+
+.mobile-toggle {
+  display: none;
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 1100;
+  background: var(--primary-blue);
+  color: white;
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
 /* Drawer */
@@ -650,22 +701,34 @@ select.form-input {
   }
 
   .sidebar {
-    width: 100%;
-    height: auto;
-    padding: 1rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 280px;
+    transform: translateX(-100%);
+    z-index: 1050;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .mobile-toggle {
+    display: flex;
+  }
+
+  .logo-container {
+    margin-bottom: 2rem;
   }
 
   .logo {
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
+    font-size: 1.4rem;
   }
 
   .nav-menu {
-    display: flex;
-    overflow-x: auto;
-    gap: 0.5rem;
-    padding-bottom: 0.5rem;
+    display: block;
+    overflow-x: visible;
   }
 
   .nav-item {

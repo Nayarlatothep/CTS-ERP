@@ -14,8 +14,12 @@ const TruckIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" /><path d="M15 18h9V10l-3-3h-6" /><circle cx="7" cy="18" r="2" /><circle cx="20" cy="18" r="2" /></svg>
 )
 
-const XIcon = () => (
+const XIcon: React.FC = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+)
+
+const MenuIcon: React.FC = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></svg>
 )
 
 function App() {
@@ -36,6 +40,8 @@ function App() {
   const [stagedItems, setStagedItems] = useState<any[]>([])
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [isOver, setIsOver] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [receptionList, setReceptionList] = useState<any[]>([])
 
   // Material Reception Form States
   // ... (rest of states)
@@ -70,6 +76,19 @@ function App() {
     }
   }
 
+  const fetchReceptionData = async () => {
+    if (!supabase) return
+    try {
+      const { data, error } = await supabase
+        .from('Reception')
+        .select('*')
+      if (error) throw error
+      setReceptionList(data || [])
+    } catch (error: any) {
+      console.error('Error fetching reception data:', error.message)
+    }
+  }
+
   const fetchEmployees = async () => {
     if (!supabase) return
     const client = supabase
@@ -91,6 +110,7 @@ function App() {
   useEffect(() => {
     fetchProducts()
     fetchEmployees()
+    fetchReceptionData()
   }, [])
 
   // Drag & Drop Handlers
@@ -139,6 +159,11 @@ function App() {
     const matchesSearch = p.Product.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesFilter = filterType === 'All' || p.material_type === filterType
     return matchesSearch && matchesFilter
+  }).map(p => {
+    const qty = receptionList
+      .filter(r => r.product === p.Product)
+      .reduce((sum, r) => sum + (Number(r.quantity) || 0), 0)
+    return { ...p, calculatedQty: qty }
   })
 
   // Circular Progress Calculation
@@ -291,13 +316,20 @@ function App() {
 
   return (
     <div className="app-container">
-      <aside className="sidebar">
-        <div className="logo">Inventory ERP</div>
+      <button className="mobile-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+        {isMenuOpen ? <XIcon /> : <MenuIcon />}
+      </button>
+
+      <aside className={`sidebar ${isMenuOpen ? 'open' : ''}`}>
+        <div className="logo-container">
+          <div className="logo">Inventory PRO</div>
+          <div className="logo-subtitle">CS Transportation LLC</div>
+        </div>
         <ul className="nav-menu">
           <li className="nav-item">
             <button
               className={`nav-link-btn ${activeTab === 'issued-products' ? 'active' : ''}`}
-              onClick={() => setActiveTab('issued-products')}
+              onClick={() => { setActiveTab('issued-products'); setIsMenuOpen(false); }}
             >
               Issued Products Entry
             </button>
@@ -394,6 +426,14 @@ function App() {
                         </div>
                         <h3 className="product-card-name">{item.Product}</h3>
                         <p className="product-card-type">{item.material_type}</p>
+                        <div className="card-data-row">
+                          <span className="card-data-label">Qty:</span>
+                          <span className="card-data-value">{item.calculatedQty || 0}</span>
+                        </div>
+                        <div className="card-data-row">
+                          <span className="card-data-label">Ubicación:</span>
+                          <span className="card-data-value">---</span>
+                        </div>
                         <div className="stock-indicator">
                           <div className="stock-dot"></div>
                           <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>In Stock</span>
