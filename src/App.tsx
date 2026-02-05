@@ -259,10 +259,15 @@ function App() {
   // Navigation State
   // Navigation State
   const [activeTab, setActiveTab] = useState('dashboard-flow')
-  const [expandedModule, setExpandedModule] = useState<string | null>('dashboards')
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [expandedModules, setExpandedModules] = useState<string[]>(['dashboards'])
 
   const toggleModule = (moduleName: string) => {
-    setExpandedModule(expandedModule === moduleName ? null : moduleName)
+    setExpandedModules(prev =>
+      prev.includes(moduleName)
+        ? prev.filter(m => m !== moduleName)
+        : [...prev, moduleName]
+    )
   }
 
   // Issued Products Form States
@@ -279,7 +284,6 @@ function App() {
   const [stagedItems, setStagedItems] = useState<any[]>([])
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [isOver, setIsOver] = useState(false)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [receptionList, setReceptionList] = useState<any[]>([])
 
   // Material Reception Form States
@@ -580,16 +584,16 @@ function App() {
           {/* Module 1: Inbound */}
           <li className="nav-item">
             <button
-              className={`nav-link-btn ${expandedModule === 'ingresos' ? 'active' : ''}`}
+              className={`nav-link-btn ${expandedModules.includes('ingresos') ? 'active' : ''}`}
               onClick={() => toggleModule('ingresos')}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
                 <Inbox size={20} />
                 <span>Inbound</span>
               </div>
-              {expandedModule === 'ingresos' ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+              {expandedModules.includes('ingresos') ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             </button>
-            {expandedModule === 'ingresos' && (
+            {expandedModules.includes('ingresos') && (
               <ul className="sub-menu">
                 <li className="sub-nav-item"><button className="sub-nav-link" disabled>Purchase Orders</button></li>
                 <li className="sub-nav-item">
@@ -610,16 +614,16 @@ function App() {
           {/* Module 2: Outbound */}
           <li className="nav-item">
             <button
-              className={`nav-link-btn ${expandedModule === 'egresos' ? 'active' : ''}`}
+              className={`nav-link-btn ${expandedModules.includes('egresos') ? 'active' : ''}`}
               onClick={() => toggleModule('egresos')}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
                 <Upload size={20} />
                 <span>Outbound</span>
               </div>
-              {expandedModule === 'egresos' ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+              {expandedModules.includes('egresos') ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             </button>
-            {expandedModule === 'egresos' && (
+            {expandedModules.includes('egresos') && (
               <ul className="sub-menu">
                 <li className="sub-nav-item">
                   <button
@@ -640,16 +644,16 @@ function App() {
           {/* Module 3: Dashboards */}
           <li className="nav-item">
             <button
-              className={`nav-link-btn ${expandedModule === 'dashboards' ? 'active' : ''}`}
+              className={`nav-link-btn ${expandedModules.includes('dashboards') ? 'active' : ''}`}
               onClick={() => toggleModule('dashboards')}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
                 <BarChart2 size={20} />
                 <span>Dashboards</span>
               </div>
-              {expandedModule === 'dashboards' ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+              {expandedModules.includes('dashboards') ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             </button>
-            {expandedModule === 'dashboards' && (
+            {expandedModules.includes('dashboards') && (
               <ul className="sub-menu">
                 <li className="sub-nav-item">
                   <button
@@ -667,7 +671,7 @@ function App() {
                     Cost Analysis
                   </button>
                 </li>
-                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Inventory Turnover</button></li>
+
                 <li className="sub-nav-item">
                   <button
                     className={`sub-nav-link ${activeTab === 'supplier-dashboard' ? 'active' : ''}`}
@@ -691,16 +695,16 @@ function App() {
           {/* Module 4: Settings */}
           <li className="nav-item">
             <button
-              className={`nav-link-btn ${expandedModule === 'config' ? 'active' : ''}`}
-              onClick={() => toggleModule('config')}
+              className={`nav-link-btn ${expandedModules.includes('configuracion') ? 'active' : ''}`}
+              onClick={() => toggleModule('configuracion')}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
                 <Settings size={20} />
                 <span>Settings</span>
               </div>
-              {expandedModule === 'config' ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+              {expandedModules.includes('configuracion') ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             </button>
-            {expandedModule === 'config' && (
+            {expandedModules.includes('configuracion') && (
               <ul className="sub-menu">
                 <li className="sub-nav-item"><button className="sub-nav-link" disabled>Material Catalog</button></li>
                 <li className="sub-nav-item"><button className="sub-nav-link" disabled>Supplier Management</button></li>
