@@ -21,6 +21,16 @@ body {
   background-color: var(--bg-gray);
 }
 
+/* Scrollbar Utility - Added for Stock Dashboard */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 .app-container {
   display: flex;
   width: 100%;

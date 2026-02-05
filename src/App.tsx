@@ -13,6 +13,7 @@ import {
   Inbox, Upload, Settings, FileText, RefreshCw, Map, Users, ClipboardList
 } from 'lucide-react'
 import VendorDashboard from './VendorDashboard'
+import StockProjectionDashboard from './StockProjectionDashboard'
 
 const SearchIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
@@ -667,7 +668,14 @@ function App() {
                     Supplier Dashboard
                   </button>
                 </li>
-                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Stock Projection</button></li>
+                <li className="sub-nav-item">
+                  <button
+                    className={`sub-nav-link ${activeTab === 'stock-projection' ? 'active' : ''}`}
+                    onClick={() => { setActiveTab('stock-projection'); setIsMenuOpen(false); }}
+                  >
+                    Stock Projection
+                  </button>
+                </li>
               </ul>
             )}
           </li>
@@ -719,7 +727,9 @@ function App() {
         </header>
 
         {activeTab === 'dashboard-flow' && <MaterialFlowDashboard />}
+
         {activeTab === 'supplier-dashboard' && <VendorDashboard />}
+        {activeTab === 'stock-projection' && <StockProjectionDashboard />}
 
         {activeTab === 'issued-products' && (
           <div className="entry-section">
