@@ -139,6 +139,111 @@
             transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* Sub-menu styling */
+        .sub-menu {
+            list-style: none;
+            padding: 0.5rem 0 0.5rem 3rem;
+            margin: 0;
+        }
+
+        .sub-nav-link {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 1rem;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-align: left;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .sub-nav-link.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Dashboard specific styles */
+        .dashboard-container {
+            padding: 1rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .dashboard-filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .kpi-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 1.5rem;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .mock-chart {
+            width: 100%;
+            height: 200px;
+            background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            padding: 20px;
+        }
+
+        .mock-bar {
+            flex: 1;
+            background: var(--primary-blue);
+            border-radius: 4px 4px 0 0;
+            transition: height 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* Staged Items Container & Counter */
         .staged-items-container {
             display: flex;
@@ -451,6 +556,8 @@
         ];
 
         function App() {
+            const [activeTab, setActiveTab] = useState('dashboard-flow');
+            const [isDashboardExpanded, setIsDashboardExpanded] = useState(true);
             const [isMenuOpen, setIsMenuOpen] = useState(false);
             const [searchTerm, setSearchTerm] = useState('');
             const [stagedItems, setStagedItems] = useState([]);
@@ -496,7 +603,29 @@
                         </div>
                         <ul className="nav-menu">
                             <li className="nav-item">
-                                <button className="nav-link-btn active" onClick={() => setIsMenuOpen(false)}>Material Dispatch</button>
+                                <button
+                                    className={`nav-link-btn ${activeTab.startsWith('dashboard') ? 'active' : ''}`}
+                                    onClick={() => setIsDashboardExpanded(!isDashboardExpanded)}
+                                >
+                                    Dashboard
+                                </button>
+                                {isDashboardExpanded && (
+                                    <ul className="sub-menu">
+                                        <li className="sub-nav-item">
+                                            <button
+                                                className={`sub-nav-link ${activeTab === 'dashboard-flow' ? 'active' : ''}`}
+                                                onClick={() => { setActiveTab('dashboard-flow'); setIsMenuOpen(false); }}
+                                            >
+                                                Material Flow & Costs
+                                            </button>
+                                        </li>
+                                    </ul>
+                                )}
+                            </li>
+                            <li className="nav-item">
+                                <button className={`nav-link-btn ${activeTab === 'material-dispatch' ? 'active' : ''}`} onClick={() => { setActiveTab('material-dispatch'); setIsMenuOpen(false); }}>
+                                    Material Dispatch
+                                </button>
                             </li>
                             <li className="nav-item">
                                 <button className="nav-link-btn" onClick={() => setIsMenuOpen(false)}>Material Reception</button>
@@ -509,90 +638,147 @@
 
                     <main className="main-content">
                         <header className="page-header">
-                            <h1 className="page-title">Material Dispatch</h1>
+                            <h1 className="page-title">
+                                {activeTab === 'dashboard-flow' ? 'Material Flow & Costs' : 'Material Dispatch'}
+                            </h1>
                         </header>
 
-                        <div className="controls-bar glass-panel">
-                            <div className="search-container">
-                                <div className="search-icon"><SearchIcon /></div>
-                                <input type="text" className="search-input" placeholder="Search..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
-                            </div>
-                        </div>
-
-                        <div className="workflow-grid">
-                            <div className="product-grid">
-                                {initialProducts.map(item => (
-                                    <div key={item.id} className="product-card" draggable onDragStart={e => handleDragStart(e, item)}>
-                                        <h3 className="product-card-name">{item.Product}</h3>
-                                        <p className="product-card-type">{item.material_type}</p>
-
-                                        <div className="card-data-row">
-                                            <span className="card-data-label">Qty:</span>
-                                            <span className="card-data-value">{item.qty}</span>
-                                        </div>
-                                        <div className="card-data-row">
-                                            <span className="card-data-label">Ubicación:</span>
-                                            <span className="card-data-value">---</span>
-                                        </div>
-
-                                        <div className="stock-indicator">
-                                            <div className={`stock-dot ${item.qty === 0 ? 'out' : ''}`}></div>
-                                            <span style={{ fontSize: '0.75rem', color: item.qty === 0 ? '#ef4444' : 'var(--text-muted)' }}>
-                                                {item.qty === 0 ? 'Out of Stock' : 'In Stock'}
-                                            </span>
-                                        </div>
-                                        {/* Horizontal Status Bar */}
-                                        <div className="horizontal-progress-container">
-                                            <div
-                                                className={`horizontal-progress-bar ${(item.qty || 0) >= 8 ? 'high' :
-                                                    (item.qty || 0) >= 4 ? 'medium' : 'low'
-                                                    }`}
-                                                style={{ width: `${Math.min(((item.qty || 0) / 10) * 100, 100)}%` }}
-                                            />
+                        {activeTab === 'dashboard-flow' && (
+                            <div className="dashboard-container">
+                                <div className="kpi-grid">
+                                    <div className="kpi-card" style={{ borderLeft: '4px solid #3b82f6' }}>
+                                        <div>
+                                            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b' }}>TOTAL INGRESOS</div>
+                                            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1e293b' }}>$150,000</div>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
+                                    <div className="kpi-card" style={{ borderLeft: '4px solid #ef4444' }}>
+                                        <div>
+                                            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b' }}>TOTAL EGRESOS</div>
+                                            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1e293b' }}>$85,000</div>
+                                        </div>
+                                    </div>
+                                    <div className="kpi-card" style={{ borderLeft: '4px solid #10b981' }}>
+                                        <div>
+                                            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b' }}>PROFIT</div>
+                                            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1e293b' }}>$65,000</div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <div className="dispatch-zone">
-                                <div className="staged-items-container">
-                                    <h3 className="staged-counter-header">
-                                        Items staged for issue:
-                                        <span className="staged-counter-badge">{stagedItems.length}</span>
-                                    </h3>
-
-                                    <div
-                                        className="drop-zone"
-                                        onDragOver={e => e.preventDefault()}
-                                        onDrop={handleDrop}
-                                    >
-                                        {stagedItems.length === 0 ? (
-                                            <p className="drop-zone-text">Drag products here to stage for dispatch</p>
-                                        ) : (
-                                            <div className="staged-items-list" style={{ width: '100%' }}>
-                                                {stagedItems.map(item => (
-                                                    <div key={item.id} className="staged-item" style={{ background: 'white', padding: '1rem', borderRadius: '12px', marginBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid #e2e8f0' }}>
-                                                        <div>
-                                                            <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>{item.Product}</div>
-                                                            <div style={{ fontSize: '0.7rem' }}>{item.material_type} - Qty: {item.dispatchQty}</div>
-                                                        </div>
-                                                        <button onClick={() => setStagedItems(stagedItems.filter(si => si.id !== item.id))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>
-                                                            <XIcon />
-                                                        </button>
-                                                    </div>
-                                                ))}
+                                <div className="analytics-grid">
+                                    <div className="chart-card">
+                                        <h3 style={{ fontSize: '0.9rem', marginBottom: '1rem' }}>FLUJO FINANCIERO MENSUAL</h3>
+                                        <div className="mock-chart">
+                                            <div className="mock-bar" style={{ height: '40%', background: '#3b82f6' }}></div>
+                                            <div className="mock-bar" style={{ height: '60%', background: '#3b82f6' }}></div>
+                                            <div className="mock-bar" style={{ height: '55%', background: '#ef4444' }}></div>
+                                            <div className="mock-bar" style={{ height: '80%', background: '#3b82f6' }}></div>
+                                            <div className="mock-bar" style={{ height: '70%', background: '#3b82f6' }}></div>
+                                        </div>
+                                    </div>
+                                    <div className="chart-card">
+                                        <h3 style={{ fontSize: '0.9rem', marginBottom: '1rem' }}>RECENT TX</h3>
+                                        <div style={{ fontSize: '0.8rem' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #f1f5f9' }}>
+                                                <span>Copper Wire</span>
+                                                <span style={{ color: '#16a34a', fontWeight: 700 }}>+$25,000</span>
                                             </div>
-                                        )}
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #f1f5f9' }}>
+                                                <span>Plastic Pellets</span>
+                                                <span style={{ color: '#dc2626', fontWeight: 700 }}>-$6,500</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
 
-                        {stagedItems.length > 0 && (
-                            <button className="fab-confirm" onClick={() => { alert('Dispatch Confirmed!'); setStagedItems([]); }}>
-                                <TruckIcon />
-                                Confirm Output
-                            </button>
+                        {activeTab === 'material-dispatch' && (
+                            <>
+                                <div className="controls-bar glass-panel">
+                                    <div className="search-container">
+                                        <div className="search-icon"><SearchIcon /></div>
+                                        <input type="text" className="search-input" placeholder="Search..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+                                    </div>
+                                </div>
+
+                                <div className="workflow-grid">
+                                    <div className="product-grid">
+                                        {initialProducts.map(item => (
+                                            <div key={item.id} className="product-card" draggable onDragStart={e => handleDragStart(e, item)}>
+                                                <h3 className="product-card-name">{item.Product}</h3>
+                                                <p className="product-card-type">{item.material_type}</p>
+
+                                                <div className="card-data-row">
+                                                    <span className="card-data-label">Qty:</span>
+                                                    <span className="card-data-value">{item.qty}</span>
+                                                </div>
+                                                <div className="card-data-row">
+                                                    <span className="card-data-label">Ubicación:</span>
+                                                    <span className="card-data-value">---</span>
+                                                </div>
+
+                                                <div className="stock-indicator">
+                                                    <div className={`stock-dot ${item.qty === 0 ? 'out' : ''}`}></div>
+                                                    <span style={{ fontSize: '0.75rem', color: item.qty === 0 ? '#ef4444' : 'var(--text-muted)' }}>
+                                                        {item.qty === 0 ? 'Out of Stock' : 'In Stock'}
+                                                    </span>
+                                                </div>
+                                                {/* Horizontal Status Bar */}
+                                                <div className="horizontal-progress-container">
+                                                    <div
+                                                        className={`horizontal-progress-bar ${(item.qty || 0) >= 8 ? 'high' :
+                                                            (item.qty || 0) >= 4 ? 'medium' : 'low'
+                                                            }`}
+                                                        style={{ width: `${Math.min(((item.qty || 0) / 10) * 100, 100)}%` }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="dispatch-zone">
+                                        <div className="staged-items-container">
+                                            <h3 className="staged-counter-header">
+                                                Items staged for issue:
+                                                <span className="staged-counter-badge">{stagedItems.length}</span>
+                                            </h3>
+
+                                            <div
+                                                className="drop-zone"
+                                                onDragOver={e => e.preventDefault()}
+                                                onDrop={handleDrop}
+                                            >
+                                                {stagedItems.length === 0 ? (
+                                                    <p className="drop-zone-text">Drag products here to stage for dispatch</p>
+                                                ) : (
+                                                    <div className="staged-items-list" style={{ width: '100%' }}>
+                                                        {stagedItems.map(item => (
+                                                            <div key={item.id} className="staged-item" style={{ background: 'white', padding: '1rem', borderRadius: '12px', marginBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid #e2e8f0' }}>
+                                                                <div>
+                                                                    <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>{item.Product}</div>
+                                                                    <div style={{ fontSize: '0.7rem' }}>{item.material_type} - Qty: {item.dispatchQty}</div>
+                                                                </div>
+                                                                <button onClick={() => setStagedItems(stagedItems.filter(si => si.id !== item.id))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>
+                                                                    <XIcon />
+                                                                </button>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {activeTab === 'material-dispatch' && stagedItems.length > 0 && (
+                                    <button className="fab-confirm" onClick={() => { alert('Dispatch Confirmed!'); setStagedItems([]); }}>
+                                        <TruckIcon />
+                                        Confirm Output
+                                    </button>
+                                )}
+                            </>
                         )}
                     </main>
                 </div>
