@@ -9,7 +9,7 @@ const VendorDashboard = () => {
                     <span className="material-symbols-outlined">analytics</span>
                 </div>
                 <div className="flex-1 px-4">
-                    <h2 className="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight">CTS-ERP Intelligence</h2>
+                    <h2 className="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight">CS Transportation LLC</h2>
                     <p className="text-xs text-slate-500 dark:text-slate-400">Vendor &amp; Spare Parts</p>
                 </div>
                 <div className="flex items-center gap-2">
