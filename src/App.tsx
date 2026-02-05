@@ -451,6 +451,15 @@ function App() {
                           <div className="stock-dot"></div>
                           <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>In Stock</span>
                         </div>
+                        {/* Horizontal Status Bar */}
+                        <div className="horizontal-progress-container">
+                          <div
+                            className={`horizontal-progress-bar ${(item.calculatedQty || 0) >= 8 ? 'high' :
+                                (item.calculatedQty || 0) >= 4 ? 'medium' : 'low'
+                              }`}
+                            style={{ width: `${Math.min(((item.calculatedQty || 0) / 10) * 100, 100)}%` }}
+                          />
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -479,44 +488,39 @@ function App() {
 
               {/* Right Side: Dispatch Queue */}
               <div className="dispatch-zone">
-                <div className="capacity-container card">
-                  <h2 className="section-subtitle" style={{ border: 'none', margin: 0 }}>Output Limit</h2>
-                  <div className="vertical-progress-container">
-                    <div
-                      className={`vertical-progress-bar ${stagedItems.length > 8 ? 'high' : stagedItems.length >= 4 ? 'medium' : 'low'}`}
-                      style={{ height: `${(stagedItems.length / maxCapacity) * 100}%` }}
-                    />
-                  </div>
-                  <div className="progress-text">{stagedItems.length}/{maxCapacity}</div>
-                  <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Items staged for issue</p>
-                </div>
+                <div className="staged-items-container">
+                  <h3 className="staged-counter-header">
+                    Items staged for issue:
+                    <span className="staged-counter-badge">{stagedItems.length}</span>
+                  </h3>
 
-                <div
-                  className={`drop-zone ${isOver ? 'over' : ''}`}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                >
-                  {stagedItems.length === 0 ? (
-                    <>
-                      <div className="drop-zone-empty-icon"><TruckIcon /></div>
-                      <p className="drop-zone-text">Drag products here to stage for dispatch</p>
-                    </>
-                  ) : (
-                    <div className="staged-items-list">
-                      {stagedItems.map(item => (
-                        <div key={item.id} className="staged-item">
-                          <div>
-                            <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>{item.Product}</div>
-                            <div style={{ fontSize: '0.7rem' }}>{item.material_type} - Qty: {item.dispatchQty}</div>
+                  <div
+                    className={`drop-zone ${isOver ? 'over' : ''}`}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                  >
+                    {stagedItems.length === 0 ? (
+                      <>
+                        <div className="drop-zone-empty-icon"><TruckIcon /></div>
+                        <p className="drop-zone-text">Drag products here to stage for dispatch</p>
+                      </>
+                    ) : (
+                      <div className="staged-items-list">
+                        {stagedItems.map(item => (
+                          <div key={item.id} className="staged-item">
+                            <div>
+                              <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>{item.Product}</div>
+                              <div style={{ fontSize: '0.7rem' }}>{item.material_type} - Qty: {item.dispatchQty}</div>
+                            </div>
+                            <button onClick={() => removeFromStaged(item.id)} className="btn-delete" style={{ padding: '0.2rem 0.5rem' }}>
+                              <XIcon />
+                            </button>
                           </div>
-                          <button onClick={() => removeFromStaged(item.id)} className="btn-delete" style={{ padding: '0.2rem 0.5rem' }}>
-                            <XIcon />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
