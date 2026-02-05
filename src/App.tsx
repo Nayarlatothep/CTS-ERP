@@ -9,7 +9,8 @@ import {
 import {
   TrendingUp, TrendingDown, DollarSign, Package, User, Calendar,
   Filter, Plus, ChevronDown, ChevronRight, Search, X, Truck, BarChart2,
-  PieChart as PieChartIcon, Activity, ArrowUpRight, ArrowDownRight
+  PieChart as PieChartIcon, Activity, ArrowUpRight, ArrowDownRight,
+  Inbox, Upload, Settings, FileText, RefreshCw, Map, Users, ClipboardList
 } from 'lucide-react'
 
 const SearchIcon = () => (
@@ -253,8 +254,13 @@ const MaterialFlowDashboard = () => {
 
 function App() {
   // Navigation State
+  // Navigation State
   const [activeTab, setActiveTab] = useState('dashboard-flow')
-  const [isDashboardExpanded, setIsDashboardExpanded] = useState(true)
+  const [expandedModule, setExpandedModule] = useState<string | null>('dashboards')
+
+  const toggleModule = (moduleName: string) => {
+    setExpandedModule(expandedModule === moduleName ? null : moduleName)
+  }
 
   // Issued Products Form States
   const [product, setProduct] = useState('')
@@ -568,68 +574,123 @@ function App() {
           <div className="logo-subtitle">Inventory PRO v 1.2 [STABLE]</div>
         </div>
         <ul className="nav-menu">
+          {/* Module 1: Ingresos */}
           <li className="nav-item">
             <button
-              className={`nav-link-btn ${activeTab.startsWith('dashboard') ? 'active' : ''}`}
-              onClick={() => setIsDashboardExpanded(!isDashboardExpanded)}
+              className={`nav-link-btn ${expandedModule === 'ingresos' ? 'active' : ''}`}
+              onClick={() => toggleModule('ingresos')}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
-                <Activity size={20} />
-                <span>Dashboard</span>
+                <Inbox size={20} />
+                <span>Ingresos</span>
               </div>
-              {isDashboardExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+              {expandedModule === 'ingresos' ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             </button>
-            {isDashboardExpanded && (
+            {expandedModule === 'ingresos' && (
+              <ul className="sub-menu">
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Órdenes de Compra</button></li>
+                <li className="sub-nav-item">
+                  <button
+                    className={`sub-nav-link ${activeTab === 'material-reception' ? 'active' : ''}`}
+                    onClick={() => { setActiveTab('material-reception'); setIsMenuOpen(false); }}
+                  >
+                    Recepción de Mercancía
+                  </button>
+                </li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Devoluciones</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Ingresos Extraordinarios</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Registro de Lotes</button></li>
+              </ul>
+            )}
+          </li>
+
+          {/* Module 2: Egresos */}
+          <li className="nav-item">
+            <button
+              className={`nav-link-btn ${expandedModule === 'egresos' ? 'active' : ''}`}
+              onClick={() => toggleModule('egresos')}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+                <Upload size={20} />
+                <span>Egresos</span>
+              </div>
+              {expandedModule === 'egresos' ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            </button>
+            {expandedModule === 'egresos' && (
+              <ul className="sub-menu">
+                <li className="sub-nav-item">
+                  <button
+                    className={`sub-nav-link ${activeTab === 'issued-products' ? 'active' : ''}`}
+                    onClick={() => { setActiveTab('issued-products'); setIsMenuOpen(false); }}
+                  >
+                    Emisión de Productos
+                  </button>
+                </li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Requisiciones Internas</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Transferencia</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Merma y Desperdicio</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Despacho Logístico</button></li>
+              </ul>
+            )}
+          </li>
+
+          {/* Module 3: Dashboards */}
+          <li className="nav-item">
+            <button
+              className={`nav-link-btn ${expandedModule === 'dashboards' ? 'active' : ''}`}
+              onClick={() => toggleModule('dashboards')}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+                <BarChart2 size={20} />
+                <span>Dashboards</span>
+              </div>
+              {expandedModule === 'dashboards' ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            </button>
+            {expandedModule === 'dashboards' && (
               <ul className="sub-menu">
                 <li className="sub-nav-item">
                   <button
                     className={`sub-nav-link ${activeTab === 'dashboard-flow' ? 'active' : ''}`}
                     onClick={() => { setActiveTab('dashboard-flow'); setIsMenuOpen(false); }}
                   >
-                    Material Flow & Costs
+                    Panel Financiero
+                  </button>
+                </li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Análisis de Costos</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Rotación de Inventario</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Dashboard Proveedores</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Proyección de Stock</button></li>
+              </ul>
+            )}
+          </li>
+
+          {/* Module 4: Configuración */}
+          <li className="nav-item">
+            <button
+              className={`nav-link-btn ${expandedModule === 'config' ? 'active' : ''}`}
+              onClick={() => toggleModule('config')}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+                <Settings size={20} />
+                <span>Configuración</span>
+              </div>
+              {expandedModule === 'config' ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            </button>
+            {expandedModule === 'config' && (
+              <ul className="sub-menu">
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Catálogo de Materiales</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Gestión de Proveedores</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Ubicaciones (Layout)</button></li>
+                <li className="sub-nav-item">
+                  <button
+                    className={`sub-nav-link ${activeTab === 'employees' ? 'active' : ''}`}
+                    onClick={() => { setActiveTab('employees'); setIsMenuOpen(false); }}
+                  >
+                    Usuarios y Permisos
                   </button>
                 </li>
               </ul>
             )}
-          </li>
-          <li className="nav-item">
-            <button
-              className={`nav-link-btn ${activeTab === 'issued-products' ? 'active' : ''}`}
-              onClick={() => { setActiveTab('issued-products'); setIsMenuOpen(false); }}
-            >
-              <Truck size={20} />
-              Material Dispatch
-            </button>
-          </li>
-          <li className="nav-item">
-            <button
-              className={`nav-link-btn ${activeTab === 'material-reception' ? 'active' : ''}`}
-              onClick={() => { setActiveTab('material-reception'); setIsMenuOpen(false); }}
-            >
-              <Package size={20} />
-              Material Reception
-            </button>
-          </li>
-          <li className="nav-item">
-            <button
-              className={`nav-link-btn ${activeTab === 'employees' ? 'active' : ''}`}
-              onClick={() => { setActiveTab('employees'); setIsMenuOpen(false); }}
-            >
-              <User size={20} />
-              Employees
-            </button>
-          </li>
-          <li className="nav-item">
-            <button className="nav-link-btn" disabled>
-              <BarChart2 size={20} />
-              Available Inventory
-            </button>
-          </li>
-          <li className="nav-item">
-            <button className="nav-link-btn" disabled>
-              <PieChartIcon size={20} />
-              Reports
-            </button>
           </li>
         </ul>
       </aside>
