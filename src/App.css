@@ -343,6 +343,10 @@ body {
   background: var(--emerald-green);
 }
 
+.stock-dot.out {
+  background: #ef4444;
+}
+
 /* Dispatch Zone */
 .dispatch-zone {
   display: flex;

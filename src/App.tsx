@@ -336,7 +336,7 @@ function App() {
       <aside className={`sidebar ${isMenuOpen ? 'open' : ''}`}>
         <div className="logo-container">
           <div className="logo">CS Transportation LLC</div>
-          <div className="logo-subtitle">Inventory PRO v 1.1 [NEW]</div>
+          <div className="logo-subtitle">Inventory PRO v 1.2 [STABLE]</div>
         </div>
         <ul className="nav-menu">
           <li className="nav-item">
@@ -344,7 +344,7 @@ function App() {
               className={`nav-link-btn ${activeTab === 'issued-products' ? 'active' : ''}`}
               onClick={() => { setActiveTab('issued-products'); setIsMenuOpen(false); }}
             >
-              Issued Products Entry
+              Material Dispatch
             </button>
           </li>
           <li className="nav-item">
@@ -378,7 +378,7 @@ function App() {
       <main className="main-content">
         <header className="page-header">
           <h1 className="page-title">
-            {activeTab === 'issued-products' ? 'Issued Products Entry' :
+            {activeTab === 'issued-products' ? 'Material Dispatch' :
               activeTab === 'material-reception' ? 'Material Reception' : 'Employees Management'}
           </h1>
           {activeTab === 'issued-products' && (
@@ -448,8 +448,10 @@ function App() {
                           <span className="card-data-value">---</span>
                         </div>
                         <div className="stock-indicator">
-                          <div className="stock-dot"></div>
-                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>In Stock</span>
+                          <div className={`stock-dot ${(item.calculatedQty || 0) === 0 ? 'out' : ''}`}></div>
+                          <span style={{ fontSize: '0.75rem', color: (item.calculatedQty || 0) === 0 ? '#ef4444' : 'var(--text-muted)' }}>
+                            {(item.calculatedQty || 0) === 0 ? 'Out of Stock' : 'In Stock'}
+                          </span>
                         </div>
                         {/* Horizontal Status Bar */}
                         <div className="horizontal-progress-container">

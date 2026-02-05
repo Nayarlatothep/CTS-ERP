@@ -340,6 +340,10 @@
             background: var(--emerald-green);
         }
 
+        .stock-dot.out {
+            background: #ef4444;
+        }
+
         .dispatch-zone {
             display: flex;
             flex-direction: column;
@@ -442,7 +446,7 @@
         const initialProducts = [
             { id: 1, Product: 'Motor Industrial AC', material_type: 'Finished Goods', qty: 45 },
             { id: 2, Product: 'Cable Cobre 10mm', material_type: 'Raw Material', qty: 1200 },
-            { id: 3, Product: 'Eje Transmisión v2', material_type: 'Wip', qty: 12 },
+            { id: 3, Product: 'Eje Transmisión v2', material_type: 'Wip', qty: 0 },
             { id: 4, Product: 'Sensor Presurizado', material_type: 'Finished Goods', qty: 88 },
         ];
 
@@ -488,11 +492,11 @@
                     <aside className={`sidebar ${isMenuOpen ? 'open' : ''}`}>
                         <div className="logo-container">
                             <div className="logo">CS Transportation LLC</div>
-                            <div className="logo-subtitle">Inventory PRO v 1.1 [NEW]</div>
+                            <div className="logo-subtitle">Inventory PRO v 1.2 [STABLE]</div>
                         </div>
                         <ul className="nav-menu">
                             <li className="nav-item">
-                                <button className="nav-link-btn active" onClick={() => setIsMenuOpen(false)}>Issued Products Entry</button>
+                                <button className="nav-link-btn active" onClick={() => setIsMenuOpen(false)}>Material Dispatch</button>
                             </li>
                             <li className="nav-item">
                                 <button className="nav-link-btn" onClick={() => setIsMenuOpen(false)}>Material Reception</button>
@@ -505,7 +509,7 @@
 
                     <main className="main-content">
                         <header className="page-header">
-                            <h1 className="page-title">Issued Products Entry</h1>
+                            <h1 className="page-title">Material Dispatch</h1>
                         </header>
 
                         <div className="controls-bar glass-panel">
@@ -532,8 +536,10 @@
                                         </div>
 
                                         <div className="stock-indicator">
-                                            <div className="stock-dot"></div>
-                                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>In Stock</span>
+                                            <div className={`stock-dot ${item.qty === 0 ? 'out' : ''}`}></div>
+                                            <span style={{ fontSize: '0.75rem', color: item.qty === 0 ? '#ef4444' : 'var(--text-muted)' }}>
+                                                {item.qty === 0 ? 'Out of Stock' : 'In Stock'}
+                                            </span>
                                         </div>
                                         {/* Horizontal Status Bar */}
                                         <div className="horizontal-progress-container">
