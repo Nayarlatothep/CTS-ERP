@@ -166,8 +166,9 @@ const MaterialFlowDashboard = () => {
                   <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} dy={10} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
                   <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
-                  <Line type="monotone" dataKey="income" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-                  <Line type="monotone" dataKey="expenses" stroke="#ef4444" strokeWidth={3} dot={{ r: 4 }} />
+                  <Legend />
+                  <Line type="linear" dataKey="income" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                  <Line type="linear" dataKey="expenses" stroke="#ef4444" strokeWidth={3} dot={{ r: 4 }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -181,9 +182,10 @@ const MaterialFlowDashboard = () => {
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                   <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
-                  <Tooltip />
-                  <Bar dataKey="cost" fill="#3b82f6" radius={[6, 6, 0, 0]} />
-                  <Bar dataKey="target" fill="#f87171" radius={[6, 6, 0, 0]} />
+                  <Tooltip cursor={{ fill: '#f1f5f9' }} />
+                  <Legend />
+                  <Bar dataKey="cost" fill="#3b82f6" radius={[6, 6, 0, 0]} label={{ position: 'top', fill: '#64748b', fontSize: 10 }} />
+                  <Bar dataKey="target" fill="#f87171" radius={[6, 6, 0, 0]} label={{ position: 'top', fill: '#64748b', fontSize: 10 }} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
