@@ -29,6 +29,10 @@ body {
 }
 
 .sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
   width: 280px;
   background-color: var(--sidebar-gray);
   color: #fff;
@@ -38,7 +42,23 @@ body {
   box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(8px);
   z-index: 1000;
-  transition: transform 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(-260px);
+  /* Only 20px visible as a "handle" */
+}
+
+.sidebar:hover {
+  transform: translateX(0);
+}
+
+.sidebar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -20px;
+  width: 20px;
+  height: 100%;
+  cursor: pointer;
 }
 
 .logo-container {
@@ -117,6 +137,9 @@ body {
   flex: 1;
   padding: 3rem;
   overflow-y: auto;
+  margin-left: 20px;
+  /* Space for the hidden sidebar handle */
+  transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .page-header {
