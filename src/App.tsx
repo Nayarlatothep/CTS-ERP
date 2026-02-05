@@ -161,20 +161,14 @@ const MaterialFlowDashboard = () => {
             </div>
             <div style={{ width: '100%', height: 300 }}>
               <ResponsiveContainer>
-                <AreaChart data={financialData}>
-                  <defs>
-                    <linearGradient id="colorIngresos" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
+                <LineChart data={financialData}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                   <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} dy={10} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
                   <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
-                  <Area type="monotone" dataKey="income" stroke="#3b82f6" fillOpacity={1} fill="url(#colorIngresos)" strokeWidth={3} />
+                  <Line type="monotone" dataKey="income" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
                   <Line type="monotone" dataKey="expenses" stroke="#ef4444" strokeWidth={3} dot={{ r: 4 }} />
-                </AreaChart>
+                </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
@@ -208,8 +202,10 @@ const MaterialFlowDashboard = () => {
                       <span className="tx-name">{tx.item}</span>
                       <span className="tx-date">{tx.date}</span>
                     </div>
-                    <div className={`tx-amount ${tx.status}`}>
-                      {tx.amount > 0 ? `+$${tx.amount.toLocaleString()}` : `-$${Math.abs(tx.amount).toLocaleString()}`}
+                    <div>
+                      <span className={`tx-amount ${tx.status}`}>
+                        {tx.amount > 0 ? `+$${tx.amount.toLocaleString()}` : `-$${Math.abs(tx.amount).toLocaleString()}`}
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -224,9 +220,11 @@ const MaterialFlowDashboard = () => {
                   <PieChart>
                     <Pie
                       data={expensesDistribution}
-                      innerRadius={60}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={0}
                       outerRadius={80}
-                      paddingAngle={5}
+                      paddingAngle={0}
                       dataKey="value"
                     >
                       {expensesDistribution.map((entry, index) => (

@@ -462,6 +462,37 @@ body {
   animation: slideIn 0.3s ease-out;
 }
 
+/* Recent Transactions Styles */
+.transaction-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid #e2e8f0;
+  /* Grey separator line */
+}
+
+.transaction-item:last-child {
+  border-bottom: none;
+}
+
+.tx-amount {
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 4px 12px;
+  border-radius: 6px;
+  color: white !important;
+  /* Force white text */
+}
+
+.tx-amount.positive {
+  background-color: var(--emerald-green);
+}
+
+.tx-amount.negative {
+  background-color: #ef4444;
+}
+
 @keyframes slideIn {
   from {
     opacity: 0;
