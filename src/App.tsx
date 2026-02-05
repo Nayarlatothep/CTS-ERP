@@ -2,6 +2,22 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import { supabase } from './supabaseClient'
 
+const SearchIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+)
+
+const PackageIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m7.5 4.27 9 5.15" /><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" /><path d="m3.3 7 8.7 5 8.7-5" /><path d="M12 22V12" /></svg>
+)
+
+const TruckIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" /><path d="M15 18h9V10l-3-3h-6" /><circle cx="7" cy="18" r="2" /><circle cx="20" cy="18" r="2" /></svg>
+)
+
+const XIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+)
+
 function App() {
   // Navigation State
   const [activeTab, setActiveTab] = useState('issued-products')
@@ -13,9 +29,18 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
 
+  // Redesign States
+  const [searchTerm, setSearchTerm] = useState('')
+  const [filterType, setFilterType] = useState('All')
+  const [selectedProduct, setSelectedProduct] = useState<any | null>(null)
+  const [stagedItems, setStagedItems] = useState<any[]>([])
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [isOver, setIsOver] = useState(false)
+
   // Material Reception Form States
+  // ... (rest of states)
   const [receptionProduct, setReceptionProduct] = useState('')
-  const [receptionUser, setReceptionUser] = useState('') // This will now be an ID or name from the list
+  const [receptionUser, setReceptionUser] = useState('')
   const [receptionQuantity, setReceptionQuantity] = useState('')
   const [receptionUnit, setReceptionUnit] = useState('')
   const [receptionInvoice, setReceptionInvoice] = useState('')
@@ -68,6 +93,60 @@ function App() {
     fetchEmployees()
   }, [])
 
+  // Drag & Drop Handlers
+  const handleDragStart = (e: React.DragEvent, item: any) => {
+    e.dataTransfer.setData('productId', item.id.toString())
+    if (e.currentTarget instanceof HTMLElement) {
+      e.currentTarget.classList.add('dragging')
+    }
+  }
+
+  const handleDragEnd = (e: React.DragEvent) => {
+    if (e.currentTarget instanceof HTMLElement) {
+      e.currentTarget.classList.remove('dragging')
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsOver(true)
+  }
+
+  const handleDragLeave = () => {
+    setIsOver(false)
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsOver(false)
+    const id = e.dataTransfer.getData('productId')
+    const item = productsList.find(p => p.id.toString() === id)
+    if (item && !stagedItems.find(si => si.id === item.id)) {
+      setStagedItems([...stagedItems, item])
+    }
+  }
+
+  const removeFromStaged = (id: number) => {
+    setStagedItems(stagedItems.filter(item => item.id !== id))
+  }
+
+  const openProductDetails = (item: any) => {
+    setSelectedProduct(item)
+    setIsDrawerOpen(true)
+  }
+
+  const filteredProducts = productsList.filter(p => {
+    const matchesSearch = p.Product.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesFilter = filterType === 'All' || p.material_type === filterType
+    return matchesSearch && matchesFilter
+  })
+
+  // Circular Progress Calculation
+  const maxCapacity = 10
+  const progressRatio = Math.min((stagedItems.length / maxCapacity) * 100, 100)
+  const dashOffset = 339.292 * (1 - progressRatio / 100)
+
+  // ... (rest of search/submit handlers)
   const handleDelete = async (id: number) => {
     if (!supabase) return
     const client = supabase
@@ -87,7 +166,6 @@ function App() {
           return
         }
 
-        // Update local state instead of re-fetching for better UX
         setProductsList(prev => prev.filter(item => item.id !== id))
       } catch (error: any) {
         console.error('Error deleting product:', error.message, error)
@@ -111,7 +189,6 @@ function App() {
     const client = supabase
 
     try {
-      // Using 'Products' as the table name and 'Product' as the column
       const { error } = await client
         .from('Products')
         .insert([{
@@ -124,8 +201,6 @@ function App() {
       alert(`Product "${product}" (${materialType}) registered in database!`)
       setProduct('')
       setMaterialType('Raw Material')
-
-      // Refresh list after successful addition
       fetchProducts()
     } catch (error: any) {
       console.error('Error saving to Supabase:', error.message)
@@ -261,87 +336,221 @@ function App() {
             {activeTab === 'issued-products' ? 'Issued Products Entry' :
               activeTab === 'material-reception' ? 'Material Reception' : 'Employees Management'}
           </h1>
+          {activeTab === 'issued-products' && (
+            <div className="status-metrics">
+              <span className="badge badge-finished-goods">{productsList.length} Total Inventory</span>
+            </div>
+          )}
         </header>
 
         {activeTab === 'issued-products' && (
-          <section className="entry-section">
-            <div className="card">
-              <h2 className="section-subtitle">Register New Product</h2>
-              <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                  <label htmlFor="product" className="form-label">Product:</label>
-                  <input
-                    type="text"
-                    id="product"
-                    className="form-input"
-                    placeholder="Enter product name..."
-                    value={product}
-                    onChange={(e) => setProduct(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="materialType" className="form-label">Material Type:</label>
-                  <select
-                    id="materialType"
-                    className="form-input"
-                    value={materialType}
-                    onChange={(e) => setMaterialType(e.target.value)}
-                    required
+          <div className="entry-section">
+            {/* Control Bar: Search & Filters */}
+            <div className="controls-bar glass-panel">
+              <div className="search-container">
+                <div className="search-icon"><SearchIcon /></div>
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Search by product name..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <div className="filters-group">
+                {['All', 'Raw Material', 'Wip', 'Finished Goods'].map(type => (
+                  <button
+                    key={type}
+                    className={`filter-btn ${filterType === type ? 'active' : ''}`}
+                    onClick={() => setFilterType(type)}
                   >
-                    <option value="Raw Material">Raw Material</option>
-                    <option value="Wip">Wip</option>
-                    <option value="Finished Goods">Finished Goods</option>
-                  </select>
-                </div>
-                <button type="submit" className="btn-primary" disabled={loading}>
-                  {loading ? 'Registering...' : 'Register Product'}
-                </button>
-              </form>
+                    {type}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            <div className="card table-card">
-              <h2 className="section-subtitle">Registered Products List</h2>
-              {fetching ? (
-                <p className="loading-text">Loading products...</p>
-              ) : productsList.length === 0 ? (
-                <p className="empty-text">No products registered yet.</p>
-              ) : (
-                <div className="table-responsive">
-                  <table className="product-table">
-                    <thead>
-                      <tr>
-                        <th>Product Name</th>
-                        <th>Material Type</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {productsList.map((item) => (
-                        <tr key={item.id}>
-                          <td>{item.Product}</td>
-                          <td>
-                            <span className={`badge badge-${item.material_type?.toLowerCase().replace(' ', '-')}`}>
-                              {item.material_type}
-                            </span>
-                          </td>
-                          <td>
-                            <button
-                              className="btn-delete"
-                              onClick={() => handleDelete(item.id)}
-                              title="Delete row"
-                            >
-                              Delete row
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+            <div className="workflow-grid">
+              {/* Left Side: Product Grid */}
+              <div className="inventory-section">
+                <h2 className="section-subtitle">Staging Inventory</h2>
+                {fetching ? (
+                  <p className="loading-text">Loading products...</p>
+                ) : filteredProducts.length === 0 ? (
+                  <p className="empty-text">No products found matching filters.</p>
+                ) : (
+                  <div className="product-grid">
+                    {filteredProducts.map((item) => (
+                      <div
+                        key={item.id}
+                        className={`product-card ${item.material_type?.toLowerCase().replace(' ', '-')}`}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, item)}
+                        onDragEnd={handleDragEnd}
+                        onClick={() => openProductDetails(item)}
+                      >
+                        <div className="card-icon-wrapper">
+                          <PackageIcon />
+                        </div>
+                        <h3 className="product-card-name">{item.Product}</h3>
+                        <p className="product-card-type">{item.material_type}</p>
+                        <div className="stock-indicator">
+                          <div className="stock-dot"></div>
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>In Stock</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Registration Form (re-integrated as a card) */}
+                <div className="glass-panel" style={{ marginTop: '2.5rem' }}>
+                  <h2 className="section-subtitle">Quick Register</h2>
+                  <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '1rem', alignItems: 'end' }}>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Product Name</label>
+                      <input type="text" className="form-input" value={product} onChange={(e) => setProduct(e.target.value)} required />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Type</label>
+                      <select className="form-input" value={materialType} onChange={(e) => setMaterialType(e.target.value)} required>
+                        <option value="Raw Material">Raw Material</option>
+                        <option value="Wip">Wip</option>
+                        <option value="Finished Goods">Finished Goods</option>
+                      </select>
+                    </div>
+                    <button type="submit" className="btn-primary" disabled={loading} style={{ marginTop: 0 }}>+</button>
+                  </form>
                 </div>
-              )}
+              </div>
+
+              {/* Right Side: Dispatch Queue */}
+              <div className="dispatch-zone">
+                <div className="capacity-container card">
+                  <h2 className="section-subtitle" style={{ border: 'none', margin: 0 }}>Output Limit</h2>
+                  <div className="circular-progress">
+                    <svg width="120" height="120">
+                      <circle className="progress-bg" cx="60" cy="60" r="54" />
+                      <circle
+                        className="progress-val"
+                        cx="60" cy="60" r="54"
+                        strokeDasharray="339.292"
+                        strokeDashoffset={dashOffset}
+                      />
+                    </svg>
+                    <div className="progress-text">{stagedItems.length}/{maxCapacity}</div>
+                  </div>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Items staged for issue</p>
+                </div>
+
+                <div
+                  className={`drop-zone ${isOver ? 'over' : ''}`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  {stagedItems.length === 0 ? (
+                    <>
+                      <div className="drop-zone-empty-icon"><TruckIcon /></div>
+                      <p className="drop-zone-text">Drag products here to stage for dispatch</p>
+                    </>
+                  ) : (
+                    <div className="staged-items-list">
+                      {stagedItems.map(item => (
+                        <div key={item.id} className="staged-item">
+                          <div>
+                            <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>{item.Product}</div>
+                            <div style={{ fontSize: '0.7rem' }}>{item.material_type}</div>
+                          </div>
+                          <button onClick={() => removeFromStaged(item.id)} className="btn-delete" style={{ padding: '0.2rem 0.5rem' }}>
+                            <XIcon />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          </section>
+
+            {/* Floating Action Button */}
+            {stagedItems.length > 0 && (
+              <button
+                className="fab-confirm"
+                onClick={() => {
+                  alert('Dispatch Confirmed for ' + stagedItems.length + ' items!');
+                  setStagedItems([]);
+                }}
+              >
+                <TruckIcon />
+                Confirm Output
+              </button>
+            )}
+
+            {/* Product Details Drawer */}
+            {isDrawerOpen && (
+              <>
+                <div className="drawer-overlay" onClick={() => setIsDrawerOpen(false)}></div>
+                <div className={`drawer ${!isDrawerOpen ? 'closed' : ''}`}>
+                  <button
+                    onClick={() => setIsDrawerOpen(false)}
+                    style={{ position: 'absolute', top: '2rem', left: '2rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
+                  >
+                    <XIcon />
+                  </button>
+                  <div style={{ marginTop: '2rem' }}>
+                    <div className="card-icon-wrapper" style={{ width: '64px', height: '64px' }}>
+                      <PackageIcon />
+                    </div>
+                    <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{selectedProduct?.Product}</h2>
+                    <span className={`badge badge-${selectedProduct?.material_type?.toLowerCase().replace(' ', '-')}`}>
+                      {selectedProduct?.material_type}
+                    </span>
+
+                    <div style={{ marginTop: '3rem' }}>
+                      <h4 style={{ textTransform: 'uppercase', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>Technical Specs</h4>
+                      <div className="glass-panel" style={{ padding: '1.5rem', display: 'grid', gap: '1rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span style={{ color: 'var(--text-muted)' }}>Status:</span>
+                          <span style={{ fontWeight: 600, color: 'var(--emerald-green)' }}>Available</span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span style={{ color: 'var(--text-muted)' }}>Warehouse:</span>
+                          <span style={{ fontWeight: 600 }}>Sector A-4</span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span style={{ color: 'var(--text-muted)' }}>Last Audit:</span>
+                          <span style={{ fontWeight: 600 }}>Feb 2026</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem' }}>
+                      <button
+                        className="btn-primary"
+                        style={{ margin: 0 }}
+                        onClick={() => {
+                          if (!stagedItems.find(si => si.id === selectedProduct.id)) {
+                            setStagedItems([...stagedItems, selectedProduct]);
+                          }
+                          setIsDrawerOpen(false);
+                        }}
+                      >
+                        Add to Queue
+                      </button>
+                      <button
+                        className="btn-delete"
+                        style={{ flex: 1 }}
+                        onClick={() => handleDelete(selectedProduct.id)}
+                      >
+                        Delete Record
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
         )}
 
         {activeTab === 'material-reception' && (
@@ -349,6 +558,7 @@ function App() {
             <div className="card">
               <h2 className="section-subtitle">Material Reception</h2>
               <form onSubmit={handleReceptionSubmit}>
+                {/* ... existing reception form ... */}
                 <div className="form-group">
                   <label htmlFor="receptionProduct" className="form-label">Product:</label>
                   <select
@@ -475,7 +685,7 @@ function App() {
                       </tr>
                     </thead>
                     <tbody>
-                      {employeesList.map((emp) => (
+                      {employeesList.map((emp: any) => (
                         <tr key={emp.id}>
                           <td>{emp.employee_id || 'N/A'}</td>
                           <td>{emp.employee_name}</td>
