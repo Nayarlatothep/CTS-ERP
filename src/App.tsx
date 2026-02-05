@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+// Deployment Update: 2026-02-05 13:10
 import './App.css'
 import { supabase } from './supabaseClient'
 
@@ -336,7 +337,7 @@ function App() {
       <aside className={`sidebar ${isMenuOpen ? 'open' : ''}`}>
         <div className="logo-container">
           <div className="logo">CS Transportation LLC</div>
-          <div className="logo-subtitle">Inventory PRO v 1.0</div>
+          <div className="logo-subtitle">Inventory PRO v 1.1 [NEW]</div>
         </div>
         <ul className="nav-menu">
           <li className="nav-item">
