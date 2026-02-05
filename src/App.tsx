@@ -574,7 +574,7 @@ function App() {
           <div className="logo-subtitle">Inventory PRO v 1.2 [STABLE]</div>
         </div>
         <ul className="nav-menu">
-          {/* Module 1: Ingresos */}
+          {/* Module 1: Inbound */}
           <li className="nav-item">
             <button
               className={`nav-link-btn ${expandedModule === 'ingresos' ? 'active' : ''}`}
@@ -582,29 +582,29 @@ function App() {
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
                 <Inbox size={20} />
-                <span>Ingresos</span>
+                <span>Inbound</span>
               </div>
               {expandedModule === 'ingresos' ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             </button>
             {expandedModule === 'ingresos' && (
               <ul className="sub-menu">
-                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Órdenes de Compra</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Purchase Orders</button></li>
                 <li className="sub-nav-item">
                   <button
                     className={`sub-nav-link ${activeTab === 'material-reception' ? 'active' : ''}`}
                     onClick={() => { setActiveTab('material-reception'); setIsMenuOpen(false); }}
                   >
-                    Recepción de Mercancía
+                    Material Reception
                   </button>
                 </li>
-                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Devoluciones</button></li>
-                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Ingresos Extraordinarios</button></li>
-                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Registro de Lotes</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Returns</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Extraordinary Inbound</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Batch Registration</button></li>
               </ul>
             )}
           </li>
 
-          {/* Module 2: Egresos */}
+          {/* Module 2: Outbound */}
           <li className="nav-item">
             <button
               className={`nav-link-btn ${expandedModule === 'egresos' ? 'active' : ''}`}
@@ -612,7 +612,7 @@ function App() {
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
                 <Upload size={20} />
-                <span>Egresos</span>
+                <span>Outbound</span>
               </div>
               {expandedModule === 'egresos' ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             </button>
@@ -623,13 +623,13 @@ function App() {
                     className={`sub-nav-link ${activeTab === 'issued-products' ? 'active' : ''}`}
                     onClick={() => { setActiveTab('issued-products'); setIsMenuOpen(false); }}
                   >
-                    Emisión de Productos
+                    Issued Products
                   </button>
                 </li>
-                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Requisiciones Internas</button></li>
-                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Transferencia</button></li>
-                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Merma y Desperdicio</button></li>
-                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Despacho Logístico</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Internal Requisitions</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Warehouse Transfer</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Waste & Scrap</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Logistics Dispatch</button></li>
               </ul>
             )}
           </li>
@@ -653,18 +653,18 @@ function App() {
                     className={`sub-nav-link ${activeTab === 'dashboard-flow' ? 'active' : ''}`}
                     onClick={() => { setActiveTab('dashboard-flow'); setIsMenuOpen(false); }}
                   >
-                    Panel Financiero
+                    Financial Panel
                   </button>
                 </li>
-                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Análisis de Costos</button></li>
-                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Rotación de Inventario</button></li>
-                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Dashboard Proveedores</button></li>
-                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Proyección de Stock</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Cost Analysis</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Inventory Turnover</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Supplier Dashboard</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Stock Projection</button></li>
               </ul>
             )}
           </li>
 
-          {/* Module 4: Configuración */}
+          {/* Module 4: Settings */}
           <li className="nav-item">
             <button
               className={`nav-link-btn ${expandedModule === 'config' ? 'active' : ''}`}
@@ -672,21 +672,21 @@ function App() {
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
                 <Settings size={20} />
-                <span>Configuración</span>
+                <span>Settings</span>
               </div>
               {expandedModule === 'config' ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             </button>
             {expandedModule === 'config' && (
               <ul className="sub-menu">
-                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Catálogo de Materiales</button></li>
-                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Gestión de Proveedores</button></li>
-                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Ubicaciones (Layout)</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Material Catalog</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Supplier Management</button></li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Locations (Layout)</button></li>
                 <li className="sub-nav-item">
                   <button
                     className={`sub-nav-link ${activeTab === 'employees' ? 'active' : ''}`}
                     onClick={() => { setActiveTab('employees'); setIsMenuOpen(false); }}
                   >
-                    Usuarios y Permisos
+                    Users & Permissions
                   </button>
                 </li>
               </ul>
