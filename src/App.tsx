@@ -182,8 +182,7 @@ function App() {
     return { ...p, calculatedQty: qty }
   })
 
-  // Output Limit Configuration
-  const maxCapacity = 10
+
 
   // ... (rest of search/submit handlers)
   const handleDelete = async (id: number) => {
