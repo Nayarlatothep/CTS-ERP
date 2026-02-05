@@ -717,7 +717,8 @@ function App() {
             {activeTab === 'dashboard-flow' ? 'Dashboard: Material Flow & Costs' :
               activeTab === 'issued-products' ? 'Material Dispatch' :
                 activeTab === 'material-reception' ? 'Material Reception' :
-                  activeTab === 'supplier-dashboard' ? 'Vendor & Spare Parts Intelligence Dashboard' : 'Employees Management'}
+                  activeTab === 'supplier-dashboard' ? 'Vendor & Spare Parts Intelligence Dashboard' :
+                    activeTab === 'stock-projection' ? 'Stock Projection' : 'Employees Management'}
           </h1>
           {activeTab === 'issued-products' && (
             <div className="status-metrics">
