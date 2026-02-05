@@ -186,19 +186,20 @@ body {
 }
 
 .dial-value {
-  font-size: 3.5rem;
-  /* Much bigger */
+  font-size: 7rem;
+  /* Doubled from 3.5rem */
   font-weight: 800;
   color: var(--slate-dark);
-  line-height: 1;
+  line-height: 0.9;
 }
 
 .dial-label {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  /* Increased size */
+  font-weight: 800;
   color: var(--text-muted);
-  letter-spacing: 0.1em;
-  margin-top: 0.5rem;
+  letter-spacing: 0.15em;
+  margin-top: 0.25rem;
 }
 
 /* Override text colors inside colored cards */
