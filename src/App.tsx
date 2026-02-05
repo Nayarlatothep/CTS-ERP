@@ -33,13 +33,13 @@ const MenuIcon: React.FC = () => (
 )
 
 const financialData = [
-  { name: 'Jan', ingresos: 45000, egresos: 32000, profit: 13000 },
-  { name: 'Feb', ingresos: 52000, egresos: 34000, profit: 18000 },
-  { name: 'Mar', ingresos: 48000, egresos: 31000, profit: 17000 },
-  { name: 'Apr', ingresos: 61000, egresos: 42000, profit: 19000 },
-  { name: 'May', ingresos: 55000, egresos: 38000, profit: 17000 },
-  { name: 'Jun', ingresos: 67000, egresos: 45000, profit: 22000 },
-  { name: 'Jul', ingresos: 72000, egresos: 48000, profit: 24000 },
+  { name: 'Jan', income: 45000, expenses: 32000, profit: 13000 },
+  { name: 'Feb', income: 52000, expenses: 34000, profit: 18000 },
+  { name: 'Mar', income: 48000, expenses: 31000, profit: 17000 },
+  { name: 'Apr', income: 61000, expenses: 42000, profit: 19000 },
+  { name: 'May', income: 55000, expenses: 38000, profit: 17000 },
+  { name: 'Jun', income: 67000, expenses: 45000, profit: 22000 },
+  { name: 'Jul', income: 72000, expenses: 48000, profit: 24000 },
 ];
 
 const categoryData = [
@@ -51,13 +51,13 @@ const categoryData = [
 ];
 
 const recentTransactions = [
-  { id: 1, item: 'Copper Wire', type: 'Ingreso', amount: 25000, status: 'positive', date: '2026-02-05' },
-  { id: 2, item: 'Plastic Mines', type: 'Egreso', amount: -6500, status: 'negative', date: '2026-02-04' },
-  { id: 3, item: 'Steel Sheets', type: 'Egreso', amount: -12000, status: 'negative', date: '2026-02-04' },
-  { id: 4, item: 'Aluminum Rods', type: 'Ingreso', amount: 18000, status: 'positive', date: '2026-02-03' },
+  { id: 1, item: 'Copper Wire', type: 'Income', amount: 25000, status: 'positive', date: '2026-02-05' },
+  { id: 2, item: 'Plastic Mines', type: 'Expense', amount: -6500, status: 'negative', date: '2026-02-04' },
+  { id: 3, item: 'Steel Sheets', type: 'Expense', amount: -12000, status: 'negative', date: '2026-02-04' },
+  { id: 4, item: 'Aluminum Rods', type: 'Income', amount: 18000, status: 'positive', date: '2026-02-03' },
 ];
 
-const egresosDistribution = [
+const expensesDistribution = [
   { name: 'Raw Materials', value: 45 },
   { name: 'Logistics', value: 25 },
   { name: 'Labor', value: 20 },
@@ -84,13 +84,13 @@ const MaterialFlowDashboard = () => {
         <div className="filter-item select-box">
           <Filter size={18} className="filter-icon" />
           <select className="dashboard-select">
-            <option>Todas las Categorías</option>
+            <option>All Categories</option>
           </select>
         </div>
         <div className="filter-item user-box">
           <User size={18} className="filter-icon" />
           <select className="dashboard-select">
-            <option>Todos los Usuarios</option>
+            <option>All Users</option>
           </select>
         </div>
         <button className="reset-filter-btn">
@@ -100,47 +100,47 @@ const MaterialFlowDashboard = () => {
 
       {/* KPI Summary Cards */}
       <div className="kpi-grid">
-        <div className="kpi-card glass-panel ingresos">
+        <div className="kpi-card glass-panel bg-blue">
           <div className="kpi-icon-wrapped">
             <ArrowUpRight size={24} />
           </div>
           <div className="kpi-content">
-            <span className="kpi-label">TOTAL INGRESOS</span>
+            <span className="kpi-label">TOTAL INCOME</span>
             <div className="kpi-value-row">
-              <span className="kpi-value text-blue">$150,000</span>
+              <span className="kpi-value">$150,000</span>
               <span className="kpi-currency">USD</span>
             </div>
-            <div className="kpi-badge blue">MGTW</div>
+            <div className="kpi-badge">MGTW</div>
           </div>
         </div>
 
-        <div className="kpi-card glass-panel egresos">
+        <div className="kpi-card glass-panel bg-red">
           <div className="kpi-icon-wrapped">
             <ArrowDownRight size={24} />
           </div>
           <div className="kpi-content">
-            <span className="kpi-label">TOTAL EGRESOS</span>
+            <span className="kpi-label">TOTAL EXPENSES</span>
             <div className="kpi-value-row">
-              <span className="kpi-value text-red">$85,000</span>
+              <span className="kpi-value">$85,000</span>
             </div>
-            <div className="kpi-badge red">ERSTW</div>
+            <div className="kpi-badge">ERSTW</div>
           </div>
         </div>
 
-        <div className="kpi-card glass-panel profit">
+        <div className="kpi-card glass-panel bg-green">
           <div className="kpi-icon-wrapped">
             <DollarSign size={24} />
           </div>
           <div className="kpi-content">
             <span className="kpi-label">PROFIT</span>
             <div className="kpi-value-row">
-              <span className="kpi-value text-green">$65,000</span>
+              <span className="kpi-value">$65,000</span>
             </div>
-            <div className="kpi-badge green">M6TW</div>
+            <div className="kpi-badge">M6TW</div>
           </div>
         </div>
 
-        <div className="kpi-card glass-panel asset-dial">
+        <div className="kpi-card glass-panel bg-white asset-dial">
           <div className="dial-container">
             <div className="dial-value">85%</div>
             <div className="dial-label">ASSET</div>
@@ -153,7 +153,7 @@ const MaterialFlowDashboard = () => {
         <div className="main-charts-column">
           <div className="chart-card glass-panel">
             <div className="chart-header">
-              <h3 className="chart-title">FLUJO FINANCIERO MENSUAL</h3>
+              <h3 className="chart-title">MONTHLY FINANCIAL FLOW</h3>
               <div className="chart-actions">
                 <button className="chart-btn active">Monthly</button>
                 <button className="chart-btn">Weekly</button>
@@ -172,15 +172,15 @@ const MaterialFlowDashboard = () => {
                   <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} dy={10} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
                   <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
-                  <Area type="monotone" dataKey="ingresos" stroke="#3b82f6" fillOpacity={1} fill="url(#colorIngresos)" strokeWidth={3} />
-                  <Line type="monotone" dataKey="egresos" stroke="#ef4444" strokeWidth={3} dot={{ r: 4 }} />
+                  <Area type="monotone" dataKey="income" stroke="#3b82f6" fillOpacity={1} fill="url(#colorIngresos)" strokeWidth={3} />
+                  <Line type="monotone" dataKey="expenses" stroke="#ef4444" strokeWidth={3} dot={{ r: 4 }} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           </div>
 
           <div className="chart-card glass-panel" style={{ marginTop: '24px' }}>
-            <h3 className="chart-title">COSTO MATERIALES POR CATEGORÍA</h3>
+            <h3 className="chart-title">MATERIAL COSTS BY CATEGORY</h3>
             <div style={{ width: '100%', height: 300 }}>
               <ResponsiveContainer>
                 <BarChart data={categoryData}>
@@ -197,45 +197,49 @@ const MaterialFlowDashboard = () => {
         </div>
 
         <div className="side-charts-column">
-          <div className="side-list-card glass-panel">
-            <h3 className="chart-title">TRANSACCIONES RECIENTES</h3>
-            <div className="transaction-list">
-              {recentTransactions.map(tx => (
-                <div key={tx.id} className="transaction-item">
-                  <div className="tx-info">
-                    <span className="tx-name">{tx.item}</span>
-                    <span className="tx-date">{tx.date}</span>
-                  </div>
-                  <div className={`tx-amount ${tx.status}`}>
-                    {tx.amount > 0 ? `+$${tx.amount.toLocaleString()}` : `-$${Math.abs(tx.amount).toLocaleString()}`}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <button className="view-all-btn">View All Transactions</button>
-          </div>
+          <div className="glass-panel" style={{ height: '100%', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
-          <div className="side-list-card glass-panel" style={{ marginTop: '24px' }}>
-            <h3 className="chart-title">DISTRIBUCIÓN DE EGRESOS</h3>
-            <div style={{ width: '100%', height: 220 }}>
-              <ResponsiveContainer>
-                <PieChart>
-                  <Pie
-                    data={egresosDistribution}
-                    innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {egresosDistribution.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
+            <div className="side-section-top">
+              <h3 className="chart-title">RECENT TRANSACTIONS</h3>
+              <div className="transaction-list">
+                {recentTransactions.map(tx => (
+                  <div key={tx.id} className="transaction-item">
+                    <div className="tx-info">
+                      <span className="tx-name">{tx.item}</span>
+                      <span className="tx-date">{tx.date}</span>
+                    </div>
+                    <div className={`tx-amount ${tx.status}`}>
+                      {tx.amount > 0 ? `+$${tx.amount.toLocaleString()}` : `-$${Math.abs(tx.amount).toLocaleString()}`}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button className="view-all-btn">View All Transactions</button>
             </div>
+
+            <div className="side-section-bottom">
+              <h3 className="chart-title">EXPENSES DISTRIBUTION</h3>
+              <div style={{ width: '100%', height: 220 }}>
+                <ResponsiveContainer>
+                  <PieChart>
+                    <Pie
+                      data={expensesDistribution}
+                      innerRadius={60}
+                      outerRadius={80}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {expensesDistribution.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -702,7 +706,7 @@ function App() {
                           <span className="card-data-value">{item.calculatedQty || 0}</span>
                         </div>
                         <div className="card-data-row">
-                          <span className="card-data-label">Ubicación:</span>
+                          <span className="card-data-label">Location:</span>
                           <span className="card-data-value">---</span>
                         </div>
                         <div className="stock-indicator">
