@@ -140,9 +140,24 @@ function App() {
     e.preventDefault()
     setIsOver(false)
     const id = e.dataTransfer.getData('productId')
-    const item = productsList.find(p => p.id.toString() === id)
+    const item = filteredProducts.find(p => p.id.toString() === id)
+
     if (item && !stagedItems.find(si => si.id === item.id)) {
-      setStagedItems([...stagedItems, item])
+      const input = window.prompt(`Enter quantity for ${item.Product} (Available: ${item.calculatedQty || 0})`)
+      if (input === null) return // Cancelled
+
+      const qty = parseInt(input)
+      if (isNaN(qty) || qty <= 0) {
+        alert("Please enter a valid positive number.")
+        return
+      }
+
+      if (qty > (item.calculatedQty || 0)) {
+        alert(`Insufficient stock! Maximum available: ${item.calculatedQty || 0}`)
+        return
+      }
+
+      setStagedItems([...stagedItems, { ...item, dispatchQty: qty }])
     }
   }
 
@@ -166,10 +181,8 @@ function App() {
     return { ...p, calculatedQty: qty }
   })
 
-  // Circular Progress Calculation
+  // Output Limit Configuration
   const maxCapacity = 10
-  const progressRatio = Math.min((stagedItems.length / maxCapacity) * 100, 100)
-  const dashOffset = 339.292 * (1 - progressRatio / 100)
 
   // ... (rest of search/submit handlers)
   const handleDelete = async (id: number) => {
@@ -468,18 +481,13 @@ function App() {
               <div className="dispatch-zone">
                 <div className="capacity-container card">
                   <h2 className="section-subtitle" style={{ border: 'none', margin: 0 }}>Output Limit</h2>
-                  <div className="circular-progress">
-                    <svg width="120" height="120">
-                      <circle className="progress-bg" cx="60" cy="60" r="54" />
-                      <circle
-                        className="progress-val"
-                        cx="60" cy="60" r="54"
-                        strokeDasharray="339.292"
-                        strokeDashoffset={dashOffset}
-                      />
-                    </svg>
-                    <div className="progress-text">{stagedItems.length}/{maxCapacity}</div>
+                  <div className="vertical-progress-container">
+                    <div
+                      className={`vertical-progress-bar ${stagedItems.length > 8 ? 'high' : stagedItems.length >= 4 ? 'medium' : 'low'}`}
+                      style={{ height: `${(stagedItems.length / maxCapacity) * 100}%` }}
+                    />
                   </div>
+                  <div className="progress-text">{stagedItems.length}/{maxCapacity}</div>
                   <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Items staged for issue</p>
                 </div>
 
@@ -500,7 +508,7 @@ function App() {
                         <div key={item.id} className="staged-item">
                           <div>
                             <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>{item.Product}</div>
-                            <div style={{ fontSize: '0.7rem' }}>{item.material_type}</div>
+                            <div style={{ fontSize: '0.7rem' }}>{item.material_type} - Qty: {item.dispatchQty}</div>
                           </div>
                           <button onClick={() => removeFromStaged(item.id)} className="btn-delete" style={{ padding: '0.2rem 0.5rem' }}>
                             <XIcon />

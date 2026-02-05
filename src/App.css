@@ -432,39 +432,48 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  justify-content: center;
+  min-height: 380px;
+  text-align: center;
   margin-bottom: 2rem;
 }
 
-.circular-progress {
-  width: 120px;
-  height: 120px;
+/* Vertical Bar Chart */
+.vertical-progress-container {
+  height: 200px;
+  width: 40px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
   position: relative;
+  overflow: hidden;
+  margin: 1.5rem auto;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.circular-progress svg {
-  transform: rotate(-90deg);
+.vertical-progress-bar {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s ease;
 }
 
-.progress-bg {
-  fill: none;
-  stroke: #e2e8f0;
-  stroke-width: 8;
+.vertical-progress-bar.high {
+  background: var(--emerald-green);
 }
 
-.progress-val {
-  fill: none;
-  stroke: var(--primary-blue);
-  stroke-width: 8;
-  stroke-linecap: round;
-  transition: stroke-dashoffset 0.6s ease;
+.vertical-progress-bar.medium {
+  background: #facc15;
 }
+
+/* Yellow-400 */
+.vertical-progress-bar.low {
+  background: #ef4444;
+}
+
+/* Red-500 */
 
 .progress-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   font-weight: 800;
   font-size: 1.25rem;
   color: var(--slate-dark);
