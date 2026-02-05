@@ -718,6 +718,7 @@ function App() {
         </header>
 
         {activeTab === 'dashboard-flow' && <MaterialFlowDashboard />}
+        {activeTab === 'supplier-dashboard' && <VendorDashboard />}
 
         {activeTab === 'issued-products' && (
           <div className="entry-section">
