@@ -56,21 +56,6 @@
             backdrop-filter: blur(8px);
             z-index: 1000;
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: translateX(-260px);
-        }
-
-        .sidebar:hover {
-            transform: translateX(0);
-        }
-
-        .sidebar::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: -20px;
-            width: 20px;
-            height: 100%;
-            cursor: pointer;
         }
 
         .logo-container {
@@ -150,7 +135,7 @@
             flex: 1;
             padding: 3rem;
             overflow-y: auto;
-            margin-left: 20px;
+            margin-left: 280px;
             transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -554,7 +539,7 @@
                                         <div className="horizontal-progress-container">
                                             <div
                                                 className={`horizontal-progress-bar ${(item.qty || 0) >= 8 ? 'high' :
-                                                        (item.qty || 0) >= 4 ? 'medium' : 'low'
+                                                    (item.qty || 0) >= 4 ? 'medium' : 'low'
                                                     }`}
                                                 style={{ width: `${Math.min(((item.qty || 0) / 10) * 100, 100)}%` }}
                                             />

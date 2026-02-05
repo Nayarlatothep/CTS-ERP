@@ -43,23 +43,8 @@ body {
   backdrop-filter: blur(8px);
   z-index: 1000;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: translateX(-260px);
-  /* Only 20px visible as a "handle" */
 }
 
-.sidebar:hover {
-  transform: translateX(0);
-}
-
-.sidebar::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: -20px;
-  width: 20px;
-  height: 100%;
-  cursor: pointer;
-}
 
 .logo-container {
   margin-bottom: 3rem;
@@ -137,8 +122,7 @@ body {
   flex: 1;
   padding: 3rem;
   overflow-y: auto;
-  margin-left: 20px;
-  /* Space for the hidden sidebar handle */
+  margin-left: 280px;
   transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 

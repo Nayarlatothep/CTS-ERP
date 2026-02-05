@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css'
 import { supabase } from './supabaseClient'
 
@@ -455,7 +455,7 @@ function App() {
                         <div className="horizontal-progress-container">
                           <div
                             className={`horizontal-progress-bar ${(item.calculatedQty || 0) >= 8 ? 'high' :
-                                (item.calculatedQty || 0) >= 4 ? 'medium' : 'low'
+                              (item.calculatedQty || 0) >= 4 ? 'medium' : 'low'
                               }`}
                             style={{ width: `${Math.min(((item.calculatedQty || 0) / 10) * 100, 100)}%` }}
                           />
