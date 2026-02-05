@@ -173,7 +173,7 @@ const StockProjectionDashboard = () => {
 
                 {/* Inventory Health & Demand Drivers */}
                 <div className="grid grid-cols-2 gap-4">
-                    <div className="col-span-2 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
+                    <div className="col-span-1 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-sm font-bold">Inventory Health</h3>
                             <span className="text-[10px] font-semibold text-slate-400 uppercase">Live Metrics</span>
@@ -248,7 +248,7 @@ const StockProjectionDashboard = () => {
                         </div>
                     </div>
                     {/* Demand Driver Insights */}
-                    <div className="col-span-2 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
+                    <div className="col-span-1 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
                         <h3 className="text-sm font-bold mb-4">Demand Driver Insights</h3>
                         <div className="space-y-4">
                             <div className="space-y-1.5">
