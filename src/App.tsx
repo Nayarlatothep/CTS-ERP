@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react'
-// Deployment Update: 2026-02-05 13:10
+// Deployment Update: 2026-02-05 14:30
 import './App.css'
 import { supabase } from './supabaseClient'
+import {
+  LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis,
+  CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area
+} from 'recharts'
+import {
+  TrendingUp, TrendingDown, DollarSign, Package, User, Calendar,
+  Filter, Plus, ChevronDown, ChevronRight, Search, X, Truck, BarChart2,
+  PieChart as PieChartIcon, Activity, ArrowUpRight, ArrowDownRight
+} from 'lucide-react'
 
 const SearchIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
@@ -23,9 +32,225 @@ const MenuIcon: React.FC = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></svg>
 )
 
+const financialData = [
+  { name: 'Jan', ingresos: 45000, egresos: 32000, profit: 13000 },
+  { name: 'Feb', ingresos: 52000, egresos: 34000, profit: 18000 },
+  { name: 'Mar', ingresos: 48000, egresos: 31000, profit: 17000 },
+  { name: 'Apr', ingresos: 61000, egresos: 42000, profit: 19000 },
+  { name: 'May', ingresos: 55000, egresos: 38000, profit: 17000 },
+  { name: 'Jun', ingresos: 67000, egresos: 45000, profit: 22000 },
+  { name: 'Jul', ingresos: 72000, egresos: 48000, profit: 24000 },
+];
+
+const categoryData = [
+  { name: 'Metals', cost: 42000, target: 45000 },
+  { name: 'Polymers', cost: 28000, target: 30000 },
+  { name: 'Electronics', cost: 35000, target: 32000 },
+  { name: 'Chemicals', cost: 15000, target: 20000 },
+  { name: 'Packaging', cost: 8000, target: 10000 },
+];
+
+const recentTransactions = [
+  { id: 1, item: 'Copper Wire', type: 'Ingreso', amount: 25000, status: 'positive', date: '2026-02-05' },
+  { id: 2, item: 'Plastic Mines', type: 'Egreso', amount: -6500, status: 'negative', date: '2026-02-04' },
+  { id: 3, item: 'Steel Sheets', type: 'Egreso', amount: -12000, status: 'negative', date: '2026-02-04' },
+  { id: 4, item: 'Aluminum Rods', type: 'Ingreso', amount: 18000, status: 'positive', date: '2026-02-03' },
+];
+
+const egresosDistribution = [
+  { name: 'Raw Materials', value: 45 },
+  { name: 'Logistics', value: 25 },
+  { name: 'Labor', value: 20 },
+  { name: 'Overhead', value: 10 },
+];
+
+const COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6'];
+
+const MaterialFlowDashboard = () => {
+  return (
+    <div className="dashboard-container">
+      {/* Top Filter Bar */}
+      <div className="dashboard-filter-bar glass-panel">
+        <div className="filter-item search-box">
+          <Search size={18} className="filter-icon" />
+          <input type="text" placeholder="Search OP, Creador..." className="dashboard-input" />
+        </div>
+        <div className="filter-item date-box">
+          <Calendar size={18} className="filter-icon" />
+          <input type="date" className="dashboard-input" />
+          <span className="date-separator">-</span>
+          <input type="date" className="dashboard-input" />
+        </div>
+        <div className="filter-item select-box">
+          <Filter size={18} className="filter-icon" />
+          <select className="dashboard-select">
+            <option>Todas las Categorías</option>
+          </select>
+        </div>
+        <div className="filter-item user-box">
+          <User size={18} className="filter-icon" />
+          <select className="dashboard-select">
+            <option>Todos los Usuarios</option>
+          </select>
+        </div>
+        <button className="reset-filter-btn">
+          <X size={18} />
+        </button>
+      </div>
+
+      {/* KPI Summary Cards */}
+      <div className="kpi-grid">
+        <div className="kpi-card glass-panel ingresos">
+          <div className="kpi-icon-wrapped">
+            <ArrowUpRight size={24} />
+          </div>
+          <div className="kpi-content">
+            <span className="kpi-label">TOTAL INGRESOS</span>
+            <div className="kpi-value-row">
+              <span className="kpi-value text-blue">$150,000</span>
+              <span className="kpi-currency">USD</span>
+            </div>
+            <div className="kpi-badge blue">MGTW</div>
+          </div>
+        </div>
+
+        <div className="kpi-card glass-panel egresos">
+          <div className="kpi-icon-wrapped">
+            <ArrowDownRight size={24} />
+          </div>
+          <div className="kpi-content">
+            <span className="kpi-label">TOTAL EGRESOS</span>
+            <div className="kpi-value-row">
+              <span className="kpi-value text-red">$85,000</span>
+            </div>
+            <div className="kpi-badge red">ERSTW</div>
+          </div>
+        </div>
+
+        <div className="kpi-card glass-panel profit">
+          <div className="kpi-icon-wrapped">
+            <DollarSign size={24} />
+          </div>
+          <div className="kpi-content">
+            <span className="kpi-label">PROFIT</span>
+            <div className="kpi-value-row">
+              <span className="kpi-value text-green">$65,000</span>
+            </div>
+            <div className="kpi-badge green">M6TW</div>
+          </div>
+        </div>
+
+        <div className="kpi-card glass-panel asset-dial">
+          <div className="dial-container">
+            <div className="dial-value">85%</div>
+            <div className="dial-label">ASSET</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Analytics Grid */}
+      <div className="analytics-grid">
+        <div className="main-charts-column">
+          <div className="chart-card glass-panel">
+            <div className="chart-header">
+              <h3 className="chart-title">FLUJO FINANCIERO MENSUAL</h3>
+              <div className="chart-actions">
+                <button className="chart-btn active">Monthly</button>
+                <button className="chart-btn">Weekly</button>
+              </div>
+            </div>
+            <div style={{ width: '100%', height: 300 }}>
+              <ResponsiveContainer>
+                <AreaChart data={financialData}>
+                  <defs>
+                    <linearGradient id="colorIngresos" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
+                  <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
+                  <Area type="monotone" dataKey="ingresos" stroke="#3b82f6" fillOpacity={1} fill="url(#colorIngresos)" strokeWidth={3} />
+                  <Line type="monotone" dataKey="egresos" stroke="#ef4444" strokeWidth={3} dot={{ r: 4 }} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          <div className="chart-card glass-panel" style={{ marginTop: '24px' }}>
+            <h3 className="chart-title">COSTO MATERIALES POR CATEGORÍA</h3>
+            <div style={{ width: '100%', height: 300 }}>
+              <ResponsiveContainer>
+                <BarChart data={categoryData}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
+                  <Tooltip />
+                  <Bar dataKey="cost" fill="#3b82f6" radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="target" fill="#f87171" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+
+        <div className="side-charts-column">
+          <div className="side-list-card glass-panel">
+            <h3 className="chart-title">TRANSACCIONES RECIENTES</h3>
+            <div className="transaction-list">
+              {recentTransactions.map(tx => (
+                <div key={tx.id} className="transaction-item">
+                  <div className="tx-info">
+                    <span className="tx-name">{tx.item}</span>
+                    <span className="tx-date">{tx.date}</span>
+                  </div>
+                  <div className={`tx-amount ${tx.status}`}>
+                    {tx.amount > 0 ? `+$${tx.amount.toLocaleString()}` : `-$${Math.abs(tx.amount).toLocaleString()}`}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button className="view-all-btn">View All Transactions</button>
+          </div>
+
+          <div className="side-list-card glass-panel" style={{ marginTop: '24px' }}>
+            <h3 className="chart-title">DISTRIBUCIÓN DE EGRESOS</h3>
+            <div style={{ width: '100%', height: 220 }}>
+              <ResponsiveContainer>
+                <PieChart>
+                  <Pie
+                    data={egresosDistribution}
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {egresosDistribution.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button className="dashboard-fab">
+        <Plus size={24} />
+      </button>
+    </div>
+  );
+};
+
 function App() {
   // Navigation State
-  const [activeTab, setActiveTab] = useState('issued-products')
+  const [activeTab, setActiveTab] = useState('dashboard-flow')
+  const [isDashboardExpanded, setIsDashboardExpanded] = useState(true)
 
   // Issued Products Form States
   const [product, setProduct] = useState('')
@@ -341,36 +566,66 @@ function App() {
         <ul className="nav-menu">
           <li className="nav-item">
             <button
+              className={`nav-link-btn ${activeTab.startsWith('dashboard') ? 'active' : ''}`}
+              onClick={() => setIsDashboardExpanded(!isDashboardExpanded)}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+                <Activity size={20} />
+                <span>Dashboard</span>
+              </div>
+              {isDashboardExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            </button>
+            {isDashboardExpanded && (
+              <ul className="sub-menu">
+                <li className="sub-nav-item">
+                  <button
+                    className={`sub-nav-link ${activeTab === 'dashboard-flow' ? 'active' : ''}`}
+                    onClick={() => { setActiveTab('dashboard-flow'); setIsMenuOpen(false); }}
+                  >
+                    Material Flow & Costs
+                  </button>
+                </li>
+              </ul>
+            )}
+          </li>
+          <li className="nav-item">
+            <button
               className={`nav-link-btn ${activeTab === 'issued-products' ? 'active' : ''}`}
               onClick={() => { setActiveTab('issued-products'); setIsMenuOpen(false); }}
             >
+              <Truck size={20} />
               Material Dispatch
             </button>
           </li>
           <li className="nav-item">
             <button
               className={`nav-link-btn ${activeTab === 'material-reception' ? 'active' : ''}`}
-              onClick={() => setActiveTab('material-reception')}
+              onClick={() => { setActiveTab('material-reception'); setIsMenuOpen(false); }}
             >
+              <Package size={20} />
               Material Reception
             </button>
           </li>
           <li className="nav-item">
             <button
               className={`nav-link-btn ${activeTab === 'employees' ? 'active' : ''}`}
-              onClick={() => setActiveTab('employees')}
+              onClick={() => { setActiveTab('employees'); setIsMenuOpen(false); }}
             >
+              <User size={20} />
               Employees
             </button>
           </li>
           <li className="nav-item">
-            <button className="nav-link-btn" disabled>Available Inventory</button>
+            <button className="nav-link-btn" disabled>
+              <BarChart2 size={20} />
+              Available Inventory
+            </button>
           </li>
           <li className="nav-item">
-            <button className="nav-link-btn" disabled>Reports</button>
-          </li>
-          <li className="nav-item">
-            <button className="nav-link-btn" disabled>Settings</button>
+            <button className="nav-link-btn" disabled>
+              <PieChartIcon size={20} />
+              Reports
+            </button>
           </li>
         </ul>
       </aside>
@@ -378,8 +633,9 @@ function App() {
       <main className="main-content">
         <header className="page-header">
           <h1 className="page-title">
-            {activeTab === 'issued-products' ? 'Material Dispatch' :
-              activeTab === 'material-reception' ? 'Material Reception' : 'Employees Management'}
+            {activeTab === 'dashboard-flow' ? 'Dashboard: Material Flow & Costs' :
+              activeTab === 'issued-products' ? 'Material Dispatch' :
+                activeTab === 'material-reception' ? 'Material Reception' : 'Employees Management'}
           </h1>
           {activeTab === 'issued-products' && (
             <div className="status-metrics">
@@ -387,6 +643,8 @@ function App() {
             </div>
           )}
         </header>
+
+        {activeTab === 'dashboard-flow' && <MaterialFlowDashboard />}
 
         {activeTab === 'issued-products' && (
           <div className="entry-section">
