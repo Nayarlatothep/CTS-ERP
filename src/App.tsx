@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import VendorDashboard from './VendorDashboard'
 import StockProjectionDashboard from './StockProjectionDashboard'
+import CostAnalysisDashboard from './CostAnalysisDashboard'
 
 const SearchIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
@@ -658,7 +659,14 @@ function App() {
                     Financial Panel
                   </button>
                 </li>
-                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Cost Analysis</button></li>
+                <li className="sub-nav-item">
+                  <button
+                    className={`sub-nav-link ${activeTab === 'cost-analysis' ? 'active' : ''}`}
+                    onClick={() => { setActiveTab('cost-analysis'); setIsMenuOpen(false); }}
+                  >
+                    Cost Analysis
+                  </button>
+                </li>
                 <li className="sub-nav-item"><button className="sub-nav-link" disabled>Inventory Turnover</button></li>
                 <li className="sub-nav-item">
                   <button
@@ -718,7 +726,8 @@ function App() {
               activeTab === 'issued-products' ? 'Material Dispatch' :
                 activeTab === 'material-reception' ? 'Material Reception' :
                   activeTab === 'supplier-dashboard' ? 'Vendor & Spare Parts Intelligence Dashboard' :
-                    activeTab === 'stock-projection' ? 'Stock Projection' : 'Employees Management'}
+                    activeTab === 'stock-projection' ? 'Stock Projection' :
+                      activeTab === 'cost-analysis' ? 'Cost Analysis Dashboard' : 'Employees Management'}
           </h1>
           {activeTab === 'issued-products' && (
             <div className="status-metrics">
@@ -731,6 +740,7 @@ function App() {
 
         {activeTab === 'supplier-dashboard' && <VendorDashboard />}
         {activeTab === 'stock-projection' && <StockProjectionDashboard />}
+        {activeTab === 'cost-analysis' && <CostAnalysisDashboard />}
 
         {activeTab === 'issued-products' && (
           <div className="entry-section">
