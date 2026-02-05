@@ -322,8 +322,8 @@ function App() {
 
       <aside className={`sidebar ${isMenuOpen ? 'open' : ''}`}>
         <div className="logo-container">
-          <div className="logo">Inventory PRO</div>
-          <div className="logo-subtitle">CS Transportation LLC</div>
+          <div className="logo">CS Transportation LLC</div>
+          <div className="logo-subtitle">Inventory PRO v 1.0</div>
         </div>
         <ul className="nav-menu">
           <li className="nav-item">
