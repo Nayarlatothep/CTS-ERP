@@ -723,7 +723,7 @@ function App() {
           <h1 className="page-title">
             {activeTab === 'dashboard-flow' ? 'Dashboard: Material Flow & Costs' :
               activeTab === 'issued-products' ? 'Material Dispatch' :
-                activeTab === 'material-reception' ? 'Material Reception' :
+                activeTab === 'material-reception' ? 'CS Transportation LLC - Inventory PRO' :
                   activeTab === 'supplier-dashboard' ? 'Vendor & Spare Parts Intelligence Dashboard' :
                     activeTab === 'stock-projection' ? 'Stock Projection' :
                       activeTab === 'cost-analysis' ? 'Cost Analysis Dashboard' : 'Employees Management'}
