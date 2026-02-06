@@ -287,6 +287,8 @@ function App() {
   const [isOver, setIsOver] = useState(false)
 
   // Material Reception Form States
+  const [receptionList, setReceptionList] = useState<any[]>([])
+  const [receptionLoading, setReceptionLoading] = useState(false)
   // ... (rest of states)
 
 
