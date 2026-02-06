@@ -31,6 +31,19 @@ const MaterialReception: React.FC<MaterialReceptionProps> = ({
         }));
     };
 
+    const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const productName = e.target.value;
+        const selectedProduct = productsList.find(p => p.Product === productName);
+
+        console.log('Selected product:', selectedProduct); // Debug log
+
+        setFormData(prev => ({
+            ...prev,
+            product: productName,
+            unit: selectedProduct?.unit || ''
+        }));
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onSubmit(formData);
@@ -50,7 +63,7 @@ const MaterialReception: React.FC<MaterialReceptionProps> = ({
                         <select
                             name="product"
                             value={formData.product}
-                            onChange={handleChange}
+                            onChange={handleProductChange}
                             className="custom-select w-full h-12 px-4 pr-10 rounded-[12px] border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                             required
                         >
@@ -115,10 +128,9 @@ const MaterialReception: React.FC<MaterialReceptionProps> = ({
                             type="text"
                             name="unit"
                             value={formData.unit}
-                            onChange={handleChange}
-                            className="w-full h-12 px-4 rounded-[12px] border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                            placeholder="e.g. Tons, m³"
-                            required
+                            readOnly
+                            className="w-full h-12 px-4 rounded-[12px] border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 cursor-not-allowed outline-none"
+                            placeholder="Auto-filled from product"
                         />
                     </div>
                 </div>

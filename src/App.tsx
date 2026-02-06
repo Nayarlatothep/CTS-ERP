@@ -16,6 +16,7 @@ import VendorDashboard from './VendorDashboard'
 import MaterialReception from './MaterialReception'
 import StockProjectionDashboard from './StockProjectionDashboard'
 import CostAnalysisDashboard from './CostAnalysisDashboard'
+import WarehouseLocation from './WarehouseLocation'
 
 const SearchIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
@@ -274,6 +275,7 @@ function App() {
   // Issued Products Form States
   const [product, setProduct] = useState('')
   const [materialType, setMaterialType] = useState('Raw Material')
+  const [unit, setUnit] = useState('')
   const [productsList, setProductsList] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
@@ -470,7 +472,8 @@ function App() {
         .from('Products')
         .insert([{
           Product: product,
-          material_type: materialType
+          material_type: materialType,
+          unit: unit
         }])
 
       if (error) throw error
@@ -478,6 +481,7 @@ function App() {
       alert(`Product "${product}" (${materialType}) registered in database!`)
       setProduct('')
       setMaterialType('Raw Material')
+      setUnit('')
       fetchProducts()
     } catch (error: any) {
       console.error('Error saving to Supabase:', error.message)
@@ -629,6 +633,14 @@ function App() {
                   </button>
                 </li>
                 <li className="sub-nav-item"><button className="sub-nav-link" disabled>Internal Requisitions</button></li>
+                <li className="sub-nav-item">
+                  <button
+                    className={`sub-nav-link ${activeTab === 'warehouse-location' ? 'active' : ''}`}
+                    onClick={() => { setActiveTab('warehouse-location'); setIsMenuOpen(false); }}
+                  >
+                    Warehouse/Location
+                  </button>
+                </li>
                 <li className="sub-nav-item"><button className="sub-nav-link" disabled>Warehouse Transfer</button></li>
                 <li className="sub-nav-item"><button className="sub-nav-link" disabled>Waste & Scrap</button></li>
                 <li className="sub-nav-item"><button className="sub-nav-link" disabled>Logistics Dispatch</button></li>
@@ -724,9 +736,10 @@ function App() {
             {activeTab === 'dashboard-flow' ? 'Dashboard: Material Flow & Costs' :
               activeTab === 'issued-products' ? 'Material Dispatch' :
                 activeTab === 'material-reception' ? 'CS Transportation LLC - Inventory PRO' :
-                  activeTab === 'supplier-dashboard' ? 'Vendor & Spare Parts Intelligence Dashboard' :
-                    activeTab === 'stock-projection' ? 'Stock Projection' :
-                      activeTab === 'cost-analysis' ? 'Cost Analysis Dashboard' : 'Employees Management'}
+                  activeTab === 'warehouse-location' ? 'Warehouse & Location Creation' :
+                    activeTab === 'supplier-dashboard' ? 'Vendor & Spare Parts Intelligence Dashboard' :
+                      activeTab === 'stock-projection' ? 'Stock Projection' :
+                        activeTab === 'cost-analysis' ? 'Cost Analysis Dashboard' : 'Employees Management'}
           </h1>
           {activeTab === 'issued-products' && (
             <div className="status-metrics">
@@ -823,7 +836,7 @@ function App() {
                 {/* Registration Form (re-integrated as a card) */}
                 <div className="glass-panel" style={{ marginTop: '2.5rem' }}>
                   <h2 className="section-subtitle">Quick Register</h2>
-                  <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '1rem', alignItems: 'end' }}>
+                  <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: '1rem', alignItems: 'end' }}>
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Product Name</label>
                       <input type="text" className="form-input" value={product} onChange={(e) => setProduct(e.target.value)} required />
@@ -835,6 +848,10 @@ function App() {
                         <option value="Wip">Wip</option>
                         <option value="Finished Goods">Finished Goods</option>
                       </select>
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Unit</label>
+                      <input type="text" className="form-input" value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="kg, pcs, lbs..." required />
                     </div>
                     <button type="submit" className="btn-primary" disabled={loading} style={{ marginTop: 0 }}>+</button>
                   </form>
@@ -968,6 +985,14 @@ function App() {
               onSubmit={handleReceptionSubmit}
               onCancel={() => setActiveTab('dashboard-flow')}
               isLoading={receptionLoading}
+            />
+          </section>
+        )}
+
+        {activeTab === 'warehouse-location' && (
+          <section className="entry-section">
+            <WarehouseLocation
+              onCancel={() => setActiveTab('dashboard-flow')}
             />
           </section>
         )}
