@@ -13,6 +13,7 @@ import {
   Inbox, Upload, Settings, FileText, RefreshCw, Map, Users, ClipboardList
 } from 'lucide-react'
 import VendorDashboard from './VendorDashboard'
+import MaterialReception from './MaterialReception'
 import StockProjectionDashboard from './StockProjectionDashboard'
 import CostAnalysisDashboard from './CostAnalysisDashboard'
 
@@ -284,16 +285,10 @@ function App() {
   const [stagedItems, setStagedItems] = useState<any[]>([])
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [isOver, setIsOver] = useState(false)
-  const [receptionList, setReceptionList] = useState<any[]>([])
 
   // Material Reception Form States
   // ... (rest of states)
-  const [receptionProduct, setReceptionProduct] = useState('')
-  const [receptionUser, setReceptionUser] = useState('')
-  const [receptionQuantity, setReceptionQuantity] = useState('')
-  const [receptionUnit, setReceptionUnit] = useState('')
-  const [receptionInvoice, setReceptionInvoice] = useState('')
-  const [receptionLoading, setReceptionLoading] = useState(false)
+
 
   // Employees Form States
   const [employeeName, setEmployeeName] = useState('')
@@ -520,9 +515,10 @@ function App() {
     }
   }
 
-  const handleReceptionSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!receptionProduct || !receptionUser) {
+  const handleReceptionSubmit = async (formData: any) => {
+    const { product, user, quantity, unit, invoice } = formData
+
+    if (!product || !user) {
       alert('Please select both a product and a user')
       return
     }
@@ -537,30 +533,27 @@ function App() {
 
     try {
       // Find the ID of the selected product
-      const selectedProd = productsList.find(p => p.Product === receptionProduct)
+      const selectedProd = productsList.find(p => p.Product === product)
       if (!selectedProd) throw new Error('Selected product not found in database')
 
       const { error } = await supabase
         .from('Reception')
         .insert([{
-          product: receptionProduct,
-          invoice: receptionInvoice,
-          user: receptionUser,
-          quantity: parseFloat(receptionQuantity),
-          unit: receptionUnit,
+          product: product,
+          invoice: invoice,
+          user: user,
+          quantity: parseFloat(quantity),
+          unit: unit,
           id: selectedProd.id // Mapping the product ID to the 'id' column
         }])
 
       if (error) throw error
 
-      alert(`Material Reception Registered Successfully!\nProduct: ${receptionProduct}\nInvoice: ${receptionInvoice}`)
+      alert(`Material Reception Registered Successfully!\nProduct: ${product}\nInvoice: ${invoice}`)
 
-      // Reset form
-      setReceptionProduct('')
-      setReceptionUser('')
-      setReceptionQuantity('')
-      setReceptionUnit('')
-      setReceptionInvoice('')
+      // Refresh data if needed or navigate
+      fetchReceptionData()
+
     } catch (error: any) {
       console.error('Error saving reception:', error.message)
       alert(`Error: ${error.message}`)
@@ -967,93 +960,13 @@ function App() {
 
         {activeTab === 'material-reception' && (
           <section className="entry-section">
-            <div className="card">
-              <h2 className="section-subtitle">Material Reception</h2>
-              <form onSubmit={handleReceptionSubmit}>
-                {/* ... existing reception form ... */}
-                <div className="form-group">
-                  <label htmlFor="receptionProduct" className="form-label">Product:</label>
-                  <select
-                    id="receptionProduct"
-                    className="form-input"
-                    value={receptionProduct}
-                    onChange={(e) => setReceptionProduct(e.target.value)}
-                    required
-                  >
-                    <option value="">-- Select a Product --</option>
-                    {productsList.map((item) => (
-                      <option key={item.id} value={item.Product}>
-                        {item.Product}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="receptionInvoice" className="form-label">Invoice Number:</label>
-                  <input
-                    type="text"
-                    id="receptionInvoice"
-                    className="form-input"
-                    placeholder="Enter Invoice #"
-                    value={receptionInvoice}
-                    onChange={(e) => setReceptionInvoice(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="receptionUser" className="form-label">User:</label>
-                  <select
-                    id="receptionUser"
-                    className="form-input"
-                    value={receptionUser}
-                    onChange={(e) => setReceptionUser(e.target.value)}
-                    required
-                  >
-                    <option value="">-- Select Employee --</option>
-                    {employeesList.map((emp) => (
-                      <option key={emp.id} value={emp.employee_name}>
-                        {emp.employee_name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="grid-2-cols">
-                  <div className="form-group">
-                    <label htmlFor="receptionQuantity" className="form-label">Quantity:</label>
-                    <input
-                      type="number"
-                      id="receptionQuantity"
-                      className="form-input"
-                      placeholder="0.00"
-                      step="0.01"
-                      value={receptionQuantity}
-                      onChange={(e) => setReceptionQuantity(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="receptionUnit" className="form-label">Unit:</label>
-                    <input
-                      type="text"
-                      id="receptionUnit"
-                      className="form-input"
-                      placeholder="e.g. Kg, Pcs, Mts"
-                      value={receptionUnit}
-                      onChange={(e) => setReceptionUnit(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <button type="submit" className="btn-primary" disabled={receptionLoading}>
-                  {receptionLoading ? 'Registering...' : 'Register Reception'}
-                </button>
-              </form>
-            </div>
+            <MaterialReception
+              productsList={productsList}
+              employeesList={employeesList}
+              onSubmit={handleReceptionSubmit}
+              onCancel={() => setActiveTab('dashboard-flow')}
+              isLoading={receptionLoading}
+            />
           </section>
         )}
 
