@@ -293,6 +293,10 @@ function App() {
   const [receptionLoading, setReceptionLoading] = useState(false)
   // ... (rest of states)
 
+  // Warehouse/Location Form States
+  const [warehouseList, setWarehouseList] = useState<any[]>([])
+  const [warehouseLoading, setWarehouseLoading] = useState(false)
+  const [fetchingWarehouses, setFetchingWarehouses] = useState(true)
 
   // Employees Form States
   const [employeeName, setEmployeeName] = useState('')
@@ -349,10 +353,29 @@ function App() {
     }
   }
 
+  const fetchWarehouses = async () => {
+    if (!supabase) return
+    const client = supabase
+    try {
+      const { data, error } = await client
+        .from('Warehouses')
+        .select('*')
+        .order('id', { ascending: false })
+
+      if (error) throw error
+      setWarehouseList(data || [])
+    } catch (error: any) {
+      console.error('Error fetching warehouses:', error.message)
+    } finally {
+      setFetchingWarehouses(false)
+    }
+  }
+
   useEffect(() => {
     fetchProducts()
     fetchEmployees()
     fetchReceptionData()
+    fetchWarehouses()
   }, [])
 
   // Drag & Drop Handlers
@@ -565,6 +588,47 @@ function App() {
       alert(`Error: ${error.message}`)
     } finally {
       setReceptionLoading(false)
+    }
+  }
+
+  const handleWarehouseSubmit = async (formData: any) => {
+    const { warehouse, location, capacity, materialType } = formData
+
+    if (!warehouse || !location || !capacity || !materialType) {
+      alert('Please fill all fields')
+      return
+    }
+
+    setWarehouseLoading(true)
+
+    if (!supabase) {
+      alert('Error: Database connection is missing.')
+      setWarehouseLoading(false)
+      return
+    }
+
+    try {
+      const { error } = await supabase
+        .from('Warehouses')
+        .insert([{
+          warehouse: warehouse,
+          location: location,
+          capacity: parseFloat(capacity),
+          material_type: materialType
+        }])
+
+      if (error) throw error
+
+      alert(`Warehouse/Location Created Successfully!\nWarehouse: ${warehouse}\nLocation: ${location}`)
+
+      // Refresh data
+      fetchWarehouses()
+
+    } catch (error: any) {
+      console.error('Error saving warehouse:', error.message)
+      alert(`Error: ${error.message}`)
+    } finally {
+      setWarehouseLoading(false)
     }
   }
 
@@ -992,6 +1056,9 @@ function App() {
         {activeTab === 'warehouse-location' && (
           <section className="entry-section">
             <WarehouseLocation
+              warehouseList={warehouseList}
+              isLoading={warehouseLoading}
+              onSubmit={handleWarehouseSubmit}
               onCancel={() => setActiveTab('dashboard-flow')}
             />
           </section>
