@@ -77,17 +77,23 @@ const WarehouseLocation: React.FC<WarehouseLocationProps> = ({
                                     >
                                         <option value="" disabled>Select warehouse...</option>
                                         {warehouseList && warehouseList.length > 0 ? (
-                                            [...new Set(warehouseList.map(item => item.warehouse || item.Warehouse))].filter(Boolean).map((warehouseName, index) => (
+                                            [...new Set(warehouseList.map(item => item.warehouse || item.Warehouse || item.location || item.Location || item.name || item.Name || 'Unknown'))].filter(Boolean).map((warehouseName, index) => (
                                                 <option key={index} value={warehouseName}>{warehouseName}</option>
                                             ))
                                         ) : (
-                                            <option value="" disabled>No warehouses found</option>
+                                            <option value="" disabled>No warehouses found (List empty)</option>
                                         )}
                                     </select>
                                     <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400">
                                         <span className="material-symbols-outlined text-lg">expand_more</span>
                                     </div>
                                 </div>
+                                <details className="mt-2 text-xs text-slate-500">
+                                    <summary>Debug Info (Click to verify data)</summary>
+                                    <pre className="mt-2 bg-slate-100 p-2 rounded overflow-auto max-h-40">
+                                        {JSON.stringify(warehouseList, null, 2)}
+                                    </pre>
+                                </details>
                             </div>
 
                             {/* Location Input */}
