@@ -76,9 +76,13 @@ const WarehouseLocation: React.FC<WarehouseLocationProps> = ({
                                         required
                                     >
                                         <option value="" disabled>Select warehouse...</option>
-                                        {[...new Set(warehouseList.map(item => item.warehouse))].map((warehouseName, index) => (
-                                            <option key={index} value={warehouseName}>{warehouseName}</option>
-                                        ))}
+                                        {warehouseList && warehouseList.length > 0 ? (
+                                            [...new Set(warehouseList.map(item => item.warehouse || item.Warehouse))].filter(Boolean).map((warehouseName, index) => (
+                                                <option key={index} value={warehouseName}>{warehouseName}</option>
+                                            ))
+                                        ) : (
+                                            <option value="" disabled>No warehouses found</option>
+                                        )}
                                     </select>
                                     <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400">
                                         <span className="material-symbols-outlined text-lg">expand_more</span>
