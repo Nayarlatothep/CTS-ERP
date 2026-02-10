@@ -7,16 +7,18 @@ import {
   CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area
 } from 'recharts'
 import {
-  TrendingUp, TrendingDown, DollarSign, Package, User, Calendar,
-  Filter, Plus, ChevronDown, ChevronRight, Search, X, Truck, BarChart2,
-  PieChart as PieChartIcon, Activity, ArrowUpRight, ArrowDownRight,
-  Inbox, Upload, Settings, FileText, RefreshCw, Map, Users, ClipboardList
+  Package, Truck, X, Search, Filter, AlertCircle, CheckCircle,
+  Menu, Settings, BarChart2, Users, FileText, ChevronRight, ChevronDown,
+  Inbox, Upload, AlertTriangle, TrendingUp, DollarSign, Activity, Calendar,
+  User, Plus, ArrowUpRight, ArrowDownRight, TrendingDown, PieChart as PieChartIcon,
+  RefreshCw, Map, ClipboardList
 } from 'lucide-react'
 import VendorDashboard from './VendorDashboard'
 import MaterialReception from './MaterialReception'
 import StockProjectionDashboard from './StockProjectionDashboard'
 import CostAnalysisDashboard from './CostAnalysisDashboard'
 import WarehouseLocation from './WarehouseLocation'
+import ScrapAndWaste from './ScrapAndWaste'
 
 const SearchIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
@@ -706,7 +708,14 @@ function App() {
                   </button>
                 </li>
                 <li className="sub-nav-item"><button className="sub-nav-link" disabled>Warehouse Transfer</button></li>
-                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Waste & Scrap</button></li>
+                <li className="sub-nav-item">
+                  <button
+                    className={`sub-nav-link ${activeTab === 'waste-scrap' ? 'active' : ''}`}
+                    onClick={() => { setActiveTab('waste-scrap'); setIsMenuOpen(false); }}
+                  >
+                    Waste & Scrap
+                  </button>
+                </li>
                 <li className="sub-nav-item"><button className="sub-nav-link" disabled>Logistics Dispatch</button></li>
               </ul>
             )}
@@ -803,7 +812,8 @@ function App() {
                   activeTab === 'warehouse-location' ? 'Warehouse & Location Creation' :
                     activeTab === 'supplier-dashboard' ? 'Vendor & Spare Parts Intelligence Dashboard' :
                       activeTab === 'stock-projection' ? 'Stock Projection' :
-                        activeTab === 'cost-analysis' ? 'Cost Analysis Dashboard' : 'Employees Management'}
+                        activeTab === 'cost-analysis' ? 'Cost Analysis Dashboard' :
+                          activeTab === 'waste-scrap' ? 'Scrap & Waste Management' : 'Employees Management'}
           </h1>
           {activeTab === 'issued-products' && (
             <div className="status-metrics">
@@ -1061,6 +1071,12 @@ function App() {
               onSubmit={handleWarehouseSubmit}
               onCancel={() => setActiveTab('dashboard-flow')}
             />
+          </section>
+        )}
+
+        {activeTab === 'waste-scrap' && (
+          <section className="entry-section">
+            <ScrapAndWaste />
           </section>
         )}
 
