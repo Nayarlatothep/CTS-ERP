@@ -360,7 +360,7 @@ function App() {
     const client = supabase
     try {
       let { data, error } = await supabase
-        .from('Warehouse')
+        .from('Warehouses')
         .select('*')
         .order('id', { ascending: false })
 
@@ -611,7 +611,7 @@ function App() {
 
     try {
       const { error } = await supabase
-        .from('Warehouse')
+        .from('Warehouses')
         .insert([{
           warehouse: warehouse,
           location: location,
