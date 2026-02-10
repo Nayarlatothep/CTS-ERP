@@ -17,7 +17,7 @@ const WarehouseLocation: React.FC<WarehouseLocationProps> = ({
         warehouse: '',
         location: '',
         description: '',
-        capacity: '',
+        capacity: '9999',
         materialType: ''
     });
 
@@ -37,7 +37,7 @@ const WarehouseLocation: React.FC<WarehouseLocationProps> = ({
             warehouse: '',
             location: '',
             description: '',
-            capacity: '',
+            capacity: '9999',
             materialType: ''
         });
     };
@@ -67,15 +67,23 @@ const WarehouseLocation: React.FC<WarehouseLocationProps> = ({
                             {/* Warehouse Input */}
                             <div className="flex flex-col gap-2">
                                 <label className="text-slate-700 dark:text-slate-300 text-sm font-semibold">Warehouse</label>
-                                <input
-                                    name="warehouse"
-                                    value={formData.warehouse}
-                                    onChange={handleChange}
-                                    className="w-full h-11 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-slate-400"
-                                    placeholder="e.g., North Hub A1"
-                                    type="text"
-                                    required
-                                />
+                                <div className="relative">
+                                    <select
+                                        name="warehouse"
+                                        value={formData.warehouse}
+                                        onChange={handleChange}
+                                        className="w-full h-11 appearance-none bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all cursor-pointer"
+                                        required
+                                    >
+                                        <option value="" disabled>Select warehouse...</option>
+                                        {[...new Set(warehouseList.map(item => item.warehouse))].map((warehouseName, index) => (
+                                            <option key={index} value={warehouseName}>{warehouseName}</option>
+                                        ))}
+                                    </select>
+                                    <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400">
+                                        <span className="material-symbols-outlined text-lg">expand_more</span>
+                                    </div>
+                                </div>
                             </div>
 
                             {/* Location Input */}
@@ -106,23 +114,19 @@ const WarehouseLocation: React.FC<WarehouseLocationProps> = ({
                             </div>
 
                             {/* Capacity Input */}
+                            {/* Capacity Input */}
                             <div className="flex flex-col gap-2">
                                 <label className="text-slate-700 dark:text-slate-300 text-sm font-semibold">Maximum Storage Capacity</label>
-                                <div className="relative">
-                                    <input
-                                        name="capacity"
-                                        value={formData.capacity}
-                                        onChange={handleChange}
-                                        className="w-full h-11 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-slate-400"
-                                        placeholder="0.00"
-                                        type="number"
-                                        step="0.01"
-                                        required
-                                    />
-                                    <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                                        <span className="text-slate-400 text-sm font-medium">m³</span>
-                                    </div>
-                                </div>
+                                <input
+                                    name="capacity"
+                                    value={formData.capacity}
+                                    onChange={handleChange}
+                                    className="w-full h-11 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-slate-400"
+                                    placeholder="9999"
+                                    type="number"
+                                    step="0.01"
+                                    required
+                                />
                             </div>
 
                             {/* Material Type Dropdown */}

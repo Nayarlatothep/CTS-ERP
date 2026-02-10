@@ -359,8 +359,8 @@ function App() {
     if (!supabase) return
     const client = supabase
     try {
-      const { data, error } = await client
-        .from('Warehouses')
+      let { data, error } = await supabase
+        .from('Warehouse')
         .select('*')
         .order('id', { ascending: false })
 
@@ -594,7 +594,7 @@ function App() {
   }
 
   const handleWarehouseSubmit = async (formData: any) => {
-    const { warehouse, location, capacity, materialType } = formData
+    const { warehouse, location, description, capacity, materialType } = formData
 
     if (!warehouse || !location || !capacity || !materialType) {
       alert('Please fill all fields')
@@ -611,10 +611,11 @@ function App() {
 
     try {
       const { error } = await supabase
-        .from('Warehouses')
+        .from('Warehouse')
         .insert([{
           warehouse: warehouse,
           location: location,
+          description: description,
           capacity: parseFloat(capacity),
           material_type: materialType
         }])
