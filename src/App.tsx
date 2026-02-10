@@ -364,7 +364,8 @@ function App() {
         .select('*')
         .order('id', { ascending: false })
 
-      console.log('Fetched Warehouses:', data, error) // Debug log
+      console.log('Fetched Warehouses Raw Data:', data) // Explicit Debug Log
+      console.log('Fetched Warehouses Error:', error)
 
       if (error) throw error
       setWarehouseList(data || [])

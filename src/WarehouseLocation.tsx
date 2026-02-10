@@ -77,7 +77,7 @@ const WarehouseLocation: React.FC<WarehouseLocationProps> = ({
                                     >
                                         <option value="" disabled>Select warehouse...</option>
                                         {warehouseList && warehouseList.length > 0 ? (
-                                            [...new Set(warehouseList.map(item => item.warehouseid || item.warehouse || item.Warehouse))].filter(Boolean).map((warehouseName, index) => (
+                                            [...new Set(warehouseList.map(item => item.warehouseid || item.warehouse_id || item.id || item.warehouse || item.Name || item.name || item.title))].filter(Boolean).map((warehouseName, index) => (
                                                 <option key={index} value={warehouseName}>{warehouseName}</option>
                                             ))
                                         ) : (
