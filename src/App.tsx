@@ -360,9 +360,11 @@ function App() {
     const client = supabase
     try {
       let { data, error } = await supabase
-        .from('Warehouses')
+        .from('Warehouse')
         .select('*')
         .order('id', { ascending: false })
+
+      console.log('Fetched Warehouses:', data, error) // Debug log
 
       if (error) throw error
       setWarehouseList(data || [])
@@ -611,7 +613,7 @@ function App() {
 
     try {
       const { error } = await supabase
-        .from('Warehouses')
+        .from('Warehouse')
         .insert([{
           warehouse: warehouse,
           location: location,
