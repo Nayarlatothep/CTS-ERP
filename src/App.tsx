@@ -615,7 +615,7 @@ function App() {
       const { error } = await supabase
         .from('Warehouses')
         .insert([{
-          warehouse: warehouse,
+          warehouseid: warehouse,
           location: location,
           description: description,
           capacity: parseFloat(capacity),

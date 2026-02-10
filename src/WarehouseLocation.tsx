@@ -77,7 +77,7 @@ const WarehouseLocation: React.FC<WarehouseLocationProps> = ({
                                     >
                                         <option value="" disabled>Select warehouse...</option>
                                         {warehouseList && warehouseList.length > 0 ? (
-                                            [...new Set(warehouseList.map(item => item.warehouse || item.Warehouse || item.location || item.Location || item.name || item.Name || 'Unknown'))].filter(Boolean).map((warehouseName, index) => (
+                                            [...new Set(warehouseList.map(item => item.warehouseid || item.warehouse || item.Warehouse))].filter(Boolean).map((warehouseName, index) => (
                                                 <option key={index} value={warehouseName}>{warehouseName}</option>
                                             ))
                                         ) : (
@@ -221,7 +221,7 @@ const WarehouseLocation: React.FC<WarehouseLocationProps> = ({
                                     {warehouseList.map((item) => (
                                         <tr key={item.id} className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                                             <td className="py-3 px-3 text-slate-900 dark:text-white text-xs">{item.id}</td>
-                                            <td className="py-3 px-3 text-slate-900 dark:text-white text-sm font-medium">{item.warehouse}</td>
+                                            <td className="py-3 px-3 text-slate-900 dark:text-white text-sm font-medium">{item.warehouseid || item.warehouse}</td>
                                             <td className="py-3 px-3 text-slate-600 dark:text-slate-400 text-xs">{item.location}</td>
                                             <td className="py-3 px-3 text-slate-900 dark:text-white text-xs">{parseFloat(item.capacity).toFixed(2)} m³</td>
                                             <td className="py-3 px-3">
