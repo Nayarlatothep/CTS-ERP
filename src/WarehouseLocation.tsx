@@ -16,6 +16,7 @@ const WarehouseLocation: React.FC<WarehouseLocationProps> = ({
     const [formData, setFormData] = useState({
         warehouse: '',
         location: '',
+        description: '',
         capacity: '',
         materialType: ''
     });
@@ -35,6 +36,7 @@ const WarehouseLocation: React.FC<WarehouseLocationProps> = ({
         setFormData({
             warehouse: '',
             location: '',
+            description: '',
             capacity: '',
             materialType: ''
         });
@@ -50,8 +52,8 @@ const WarehouseLocation: React.FC<WarehouseLocationProps> = ({
         <div className="w-full max-w-7xl mx-auto">
             {/* Page Header */}
             <div className="mb-6">
-                <h1 className="text-slate-900 dark:text-white text-2xl font-bold tracking-tight">Warehouse & Location Management</h1>
-                <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm">Configure storage assets for the CS Transportation network.</p>
+                <h1 className="text-slate-900 dark:text-white text-2xl font-bold tracking-tight">Location Management</h1>
+                <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm">Configure storage locations for the CS Transportation network.</p>
             </div>
 
             {/* Two Column Layout: Form + Table */}
@@ -60,7 +62,7 @@ const WarehouseLocation: React.FC<WarehouseLocationProps> = ({
                 <div className="space-y-4">
                     {/* Form Card */}
                     <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
-                        <h2 className="text-slate-900 dark:text-white text-lg font-bold mb-4">Create New Warehouse/Location</h2>
+                        <h2 className="text-slate-900 dark:text-white text-lg font-bold mb-4">Create New Location</h2>
                         <form onSubmit={handleSubmit} className="space-y-4">
                             {/* Warehouse Input */}
                             <div className="flex flex-col gap-2">
@@ -87,6 +89,19 @@ const WarehouseLocation: React.FC<WarehouseLocationProps> = ({
                                     placeholder="e.g., Aisle 4, Shelf B"
                                     type="text"
                                     required
+                                />
+                            </div>
+
+                            {/* Description Input */}
+                            <div className="flex flex-col gap-2">
+                                <label className="text-slate-700 dark:text-slate-300 text-sm font-semibold">Description</label>
+                                <input
+                                    name="description"
+                                    value={formData.description}
+                                    onChange={handleChange}
+                                    className="w-full h-11 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-slate-400"
+                                    placeholder="Optional description..."
+                                    type="text"
                                 />
                             </div>
 

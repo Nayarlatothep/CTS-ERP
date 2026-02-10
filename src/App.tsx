@@ -704,9 +704,10 @@ function App() {
                     className={`sub-nav-link ${activeTab === 'warehouse-location' ? 'active' : ''}`}
                     onClick={() => { setActiveTab('warehouse-location'); setIsMenuOpen(false); }}
                   >
-                    Warehouse/Location
+                    Location
                   </button>
                 </li>
+                <li className="sub-nav-item"><button className="sub-nav-link" disabled>Warehouse</button></li>
                 <li className="sub-nav-item"><button className="sub-nav-link" disabled>Warehouse Transfer</button></li>
                 <li className="sub-nav-item">
                   <button
@@ -801,7 +802,7 @@ function App() {
             )}
           </li>
         </ul>
-      </aside>
+      </aside >
 
       <main className="main-content">
         <header className="page-header">
@@ -809,7 +810,7 @@ function App() {
             {activeTab === 'dashboard-flow' ? 'Dashboard: Material Flow & Costs' :
               activeTab === 'issued-products' ? 'Material Dispatch' :
                 activeTab === 'material-reception' ? 'CS Transportation LLC - Inventory PRO' :
-                  activeTab === 'warehouse-location' ? 'Warehouse & Location Creation' :
+                  activeTab === 'warehouse-location' ? 'Location Management' :
                     activeTab === 'supplier-dashboard' ? 'Vendor & Spare Parts Intelligence Dashboard' :
                       activeTab === 'stock-projection' ? 'Stock Projection' :
                         activeTab === 'cost-analysis' ? 'Cost Analysis Dashboard' :
@@ -1139,7 +1140,7 @@ function App() {
           </section>
         )}
       </main>
-    </div>
+    </div >
   )
 }
 
